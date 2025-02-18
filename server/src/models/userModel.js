@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Please enter your name"],
+      required: [true, "Please enter your shop name"],
     },
     email: {
       type: String,
@@ -26,10 +26,13 @@ const userSchema = new mongoose.Schema(
       minlength: [6, "Password must be at least 6 characters"],
       select: false,
     },
-
-    shop: {
+    address: {
       type: String,
-      required: [true, "Please enter shop name"],
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
     },
     isVerified: {
       type: Boolean,
@@ -37,12 +40,18 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["user", "admin", "dentist"],
-      default: "user",
+      enum: ["shop", "admin", "distributor"],
+      default: "shop",
+      required: true,
     },
     avatar: {
       public_id: String,
       url: String,
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["khalti", "cash"],
+      default: "cash",
     },
   },
   { timestamps: true }

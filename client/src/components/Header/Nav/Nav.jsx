@@ -1,4 +1,4 @@
-import { Menu, Search, Truck, X } from "lucide-react";
+import { LogIn, Menu, Search, Truck, UserPlus, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -52,13 +52,36 @@ const Nav = () => {
                 <LogoutButton />
               </>
             ) : (
-              <Link
-                to={"/register"}
-                className="bg-blue-900 text-white px-6 py-2 rounded hover:bg-blue-800 transition-colors"
-              >
-                Get Started
-              </Link>
+              <>
+                                 <Link
+                    to="/login"
+                    className="flex items-center space-x-1 px-4 py-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+                  >
+                    <LogIn className="h-4 w-4" />
+                    <span>Login</span>
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="flex items-center space-x-1 px-4 py-2 rounded-sm bg-[#1E3A8A] text-white hover:bg-[#1E3A8A]/90 transition-colors"
+                  >
+                    <UserPlus className="h-4 w-4" />
+                    <span>Register</span>
+                  </Link>
+             
+              </>
+          
             )}
+            {
+              user.role === 'admin' && (
+                <Link
+                    to="/admin"
+                    className="flex items-center space-x-1 px-4 py-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+                  >
+                    {/* <LogIn className="h-4 w-4" /> */}
+                    <span>Dashboard</span>
+                  </Link>
+              )
+            }
           </div>
           <button
             className="md:hidden"

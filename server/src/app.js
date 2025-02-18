@@ -32,7 +32,8 @@ app.use(cookieParser());
 
 
 // Routes configuration for the authentication
-app.use('/api/v1/user', userRoutes);
+import router from './routes/index.js';
+app.use('/', router);
 
 // TEST ROUTES
 app.get('/test', (req, res, next) => {

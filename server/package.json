@@ -6,10 +6,11 @@
   "scripts": {
     "start": "node src/server.js",
     "server": "nodemon src/server.js",
-    "client": "npm run dev --prefix ../frontend",
-    "dev": "concurrently \" npm run server \" \"npm run client \" "
+    "client": "npm run dev --prefix ../client",
+    "dev": "concurrently \" npm run server \" \"npm run client \" ",
+    "seeder": "node src/seeder.js"
   },
-  "author": "Anshu Singh Thakuri",
+  "author": "Ayush Shrestha",
   "license": "ISC",
   "description": "",
   "dependencies": {

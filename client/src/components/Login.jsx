@@ -29,7 +29,11 @@ const Login = () => {
       const res = await storeLogin(data).unwrap();
       console.log(res);
       dispatch(setCredentials({ user: res.user }));
-      navigate("/");
+      if(res.user.role === 'user'){
+        navigate("/");
+      }else if (res.user.role === 'admin'){
+        navigate('/admin')
+      }
       toast.success("Login Successful");
     } catch (error) {
       toast.error("Invalid Email or Password");
