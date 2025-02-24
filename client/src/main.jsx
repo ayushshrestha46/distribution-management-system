@@ -12,12 +12,18 @@ import {
   SupplierList,
   AddSupplier,
   AddProduct,
+  EditSupplier,
+  ProductList,
+  EditProduct,
+  AdminDashboard,
+  PageNotFound,
 } from "./components";
 import { StrictMode } from "react";
 import AuthLayout from "./routes/AuthLayout";
 
-import { HomePage } from "./pages";
+import { DashboardPage, HomePage } from "./pages";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import AdminLayout from "./routes/AdminLayout";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <HomePage />,
+      },
+      {
+        path: "*",
+        element: <PageNotFound />,
       },
 
       {
@@ -55,26 +65,73 @@ const router = createBrowserRouter([
         ),
       },
 
-      // {
-      //   path: "/dashboard",
-      //   element: (
-      //     <AuthLayout authentication={true}>
-      //       <DashboardPage />
-      //     </AuthLayout>
-      //   ),
-      // },
-      // {
-      //   path: "/suppliers",
-      //   element: (
-      //     <AuthLayout authentication={true}>
-      //       <SupplierPage />
-      //     </AuthLayout>
-      //   ),
-      // },
-
       {
         path: "/admin",
         element: <AdminDashboardPage />,
+        children: [
+          {
+            index: true,
+            element: (
+              <AdminLayout>
+                <AdminDashboard />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: "suppliers",
+            element: (
+              <AdminLayout>
+                <SupplierList />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: "add-supplier",
+            element: (
+              <AdminLayout>
+                <AddSupplier />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: "edit-supplier/:id",
+            element: (
+              <AdminLayout>
+                <EditSupplier />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: "products",
+            element: (
+              <AdminLayout>
+                <ProductList />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: "add-product",
+            element: (
+              <AdminLayout>
+                <AddProduct />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: "edit-product/:id",
+            element: (
+              <AdminLayout>
+                <EditProduct />
+              </AdminLayout>
+            ),
+          },
+        ],
+      },
+
+      // DashBoard
+      {
+        path: "/dashboard",
+        element: <DashboardPage />,
         children: [
           {
             index: true,
@@ -83,23 +140,51 @@ const router = createBrowserRouter([
           {
             path: "suppliers",
             element: (
-              // <AdminLayout>
-              <SupplierList />
-              // </AdminLayout>
+              <AdminLayout>
+                <SupplierList />
+              </AdminLayout>
             ),
           },
           {
             path: "add-supplier",
-            element: <AddSupplier />,
+            element: (
+              <AdminLayout>
+                <AddSupplier />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: "edit-supplier/:id",
+            element: (
+              <AdminLayout>
+                <EditSupplier />
+              </AdminLayout>
+            ),
           },
           {
             path: "products",
             element: (
-            // <AdminLayout>
-            <AddProduct/>
-            // </AdminLayout>
-          ),
-          }, 
+              <AdminLayout>
+                <ProductList />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: "add-product",
+            element: (
+              <AdminLayout>
+                <AddProduct />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: "edit-product/:id",
+            element: (
+              <AdminLayout>
+                <EditProduct />
+              </AdminLayout>
+            ),
+          },
         ],
       },
     ],

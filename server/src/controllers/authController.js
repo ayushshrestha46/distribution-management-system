@@ -8,12 +8,12 @@ import { fileURLToPath } from "url";
 import sendMail from "../utils/sendMail.js";
 import createActivationToken from "../utils/activation.js";
 import { sendToken } from "../utils/jwt.js";
+import Distributor from "../models/distributorModel.js";
 
 class AuthController {
   static registration = asyncHandler(async (req, res, next) => {
     try {
-      const { name, email, password, shop } = req.body;
-      console.log(req.body);
+      const { name, email, password, address, phone } = req.body;
 
       if (!name) {
         return next(new ErrorHandler("Name cannot be empty", 400));
@@ -25,8 +25,11 @@ class AuthController {
       if (!password) {
         return next(new ErrorHandler("Name cannot be empty", 400));
       }
-      if (!shop) {
-        return next(new ErrorHandler("Shop cannot be empty", 400));
+      if (!address) {
+        return next(new ErrorHandler("Address cannot be empty", 400));
+      }
+      if (!phone) {
+        return next(new ErrorHandler("Phone cannot be empty", 400));
       }
       const isEmailExist = await User.findOne({ email });
 
@@ -38,7 +41,8 @@ class AuthController {
         name,
         email,
         password,
-        shop,
+        address,
+        phone,
       };
 
       const activationToken = createActivationToken(user);
@@ -54,7 +58,6 @@ class AuthController {
         "../mails/activationMail.ejs"
       );
 
-      // console.log('This is the mailPath', mailPath);
       const html = await ejs.renderFile(mailPath, data);
 
       // Send mail function call
@@ -89,8 +92,7 @@ class AuthController {
         return next(new ErrorHandler("Invalid activation Code", 400));
       }
 
-      const { name, email, password, shop } = newUser?.userdata;
-      console.log(newUser?.userdata);
+      const { name, email, password, address, phone } = newUser?.userdata;
 
       const existUser = await User.findOne({ email });
 
@@ -102,7 +104,8 @@ class AuthController {
         name,
         email,
         password,
-        shop,
+        address,
+        phone,
       });
 
       res.status(201).json({
@@ -162,6 +165,38 @@ class AuthController {
       return next(new ErrorHandler(error.message, 400));
     }
   });
+
+
+  static changePassword = asyncHandler(async (req, res, next) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      const user = await User.findById(req.user._id).select("+password");
+      const passwordMatch = user.comparePassword(currentPassword);
+      if (!passwordMatch) {
+        return next(new ErrorHandler("Password is incorrect"));
+      }
+      if (currentPassword === newPassword) {
+        return next(new ErrorHandler("New password is already used", 400));
+      }
+      // Now update the old password with new password
+      user.password = newPassword;
+      await user.save();
+      const distributor = await Distributor.findOne({ user: user._id });
+      if (distributor) {
+        await Distributor.findByIdAndUpdate(
+          distributor._id,
+          { firstlogin: false },
+          { new: true, runValidators: true }
+        );
+      }
+      return res
+        .status(200)
+        .json({ success: true, message: "Password updated successfully" });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  });
 }
+
 
 export default AuthController;

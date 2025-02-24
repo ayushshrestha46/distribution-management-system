@@ -20,6 +20,15 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    changePassword: builder.mutation({
+      query: (data) => ({
+        url: `${user_url}/change-password`,
+        method: "PUT",
+        body: data,
+        credentials: 'include'
+      }),
+    }),
+
     activate: builder.mutation({
       query: (data) => ({
         url: `${user_url}/activate`,
@@ -38,5 +47,5 @@ export const userApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useActivateMutation, useLogoutMutation } =
+export const { useLoginMutation, useRegisterMutation, useActivateMutation, useLogoutMutation, useChangePasswordMutation } =
   userApiSlice;

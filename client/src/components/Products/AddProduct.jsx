@@ -1,12 +1,16 @@
 import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import { ArrowLeft, Box, Package, Layers } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "../ui/scroll-area";
 import productImage from "../../../public/order.png";
+import Formfield from "./Formfield";
 import { useState } from "react";
+import {
+  useAddProductMutation,
+  useGetAllProductQuery,
+} from "@/app/slices/productApiSlice";
 
 function AddProduct() {
   const navigate = useNavigate();
@@ -17,37 +21,103 @@ function AddProduct() {
     outOfStock: 25,
     totalCategories: 10,
   };
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+  const [errorMessage, setErrorMessage] = useState("");
+  const [addProduct, { isLoading }] = useAddProductMutation();
+  const { refetch } = useGetAllProductQuery();
 
   const {
-    register,
+    control,
+    getValues,
     handleSubmit,
+    setValue,
+    register,
     reset,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    defaultValues: {
+      images: [],
+    },
+  });
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files || []);
+
+    if (files.length === 0) {
+      setErrorMessage("Please select at least one image.");
+      return;
+    }
+
+    let validImages = [];
+    files.forEach((file) => {
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error(`Image ${file.name} exceeds 5MB limit`);
+      } else {
+        validImages.push(file);
+      }
+    });
+
+    if (validImages.length > 0) {
+      validImages.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (reader.readyState === 2) {
+            setImagePreviews((prev) => [...prev, reader.result]);
+            setValue("images", [...(getValues("images") || []), reader.result]);
+            setErrorMessage(""); // Clear error message
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    } else if (imagePreviews.length === 0) {
+      setErrorMessage("Please upload at least one valid image.");
+    }
+  };
+
+  const removeImage = (index) => {
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+    const currentImages = getValues("images") || [];
+    setValue(
+      "images",
+      currentImages.filter((_, i) => i !== index)
+    );
+
+    // Show error if no images are left
+    if (imagePreviews.length === 1) {
+      setErrorMessage("Please upload at least one image.");
+    }
+  };
 
   const onSubmit = async (data) => {
+    if (imagePreviews.length === 0) {
+      setErrorMessage("Please upload at least one image.");
+      return;
+    }
+
     try {
-      console.log(data);
-      toast.success("Product Added Successfully");
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
+      const addData = { ...data };
+      const res = await addProduct(addData).unwrap();
+      refetch();
       reset();
+      toast.success(res.message);
+      setImagePreviews([]);
+    } catch (error) {
+      console.error("Error creating journal:", error);
+      toast.error(error?.data?.message || "Failed to create journal entry");
     }
   };
 
   return (
     <ScrollArea className="flex-1 h-[calc(100vh-25px)]">
       <div className="overflow-auto bg-gray-50 w-full py-8 px-4 sm:px-6 lg:px-8 mt-16">
-        {/* Overview Section */}
-        {/* Add Product Section */}
         <div className="mb-8">
           <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Products
           </Button>
 
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex  flex-col  gap-4 mb-6">
             <h1 className="text-3xl flex items-center gap-1 font-bold text-gray-900">
               <img src={productImage} alt="" width={40} />
               Add New Product
@@ -58,158 +128,28 @@ function AddProduct() {
           </div>
         </div>
 
-        {/* dash */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="p-4 bg-white shadow-md rounded-lg flex items-center gap-4">
-            <Box className="text-blue-600 h-10 w-10" />
-            <div>
-              <h4 className="text-gray-500 text-sm">Total Products</h4>
-              <p className="text-xl font-bold">{stats.totalProducts}</p>
-            </div>
-          </div>
-
-          <div className="p-4 bg-white shadow-md rounded-lg flex items-center gap-4">
-            <Package className="text-green-600 h-10 w-10" />
-            <div>
-              <h4 className="text-gray-500 text-sm">In Stock</h4>
-              <p className="text-xl font-bold">{stats.inStock}</p>
-            </div>
-          </div>
-
-          <div className="p-4 bg-white shadow-md rounded-lg flex items-center gap-4">
-            <Package className="text-red-600 h-10 w-10" />
-            <div>
-              <h4 className="text-gray-500 text-sm">Out of Stock</h4>
-              <p className="text-xl font-bold">{stats.outOfStock}</p>
-            </div>
-          </div>
-
-          <div className="p-4 bg-white shadow-md rounded-lg flex items-center gap-4">
-            <Layers className="text-yellow-600 h-10 w-10" />
-            <div>
-              <h4 className="text-gray-500 text-sm">Total Categories</h4>
-              <p className="text-xl font-bold">{stats.totalCategories}</p>
-            </div>
-          </div>
-        </div>
-
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="p-8">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
               <div className="space-y-6">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-1 bg-blue-600 rounded-full"></div>
                   <h3 className="text-xl font-semibold text-gray-900">
                     Product Information
                   </h3>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Product Name
-                    </label>
-                    <Input
-                      {...register("productName", {
-                        required: "Product name is required",
-                      })}
-                      placeholder="Example Product"
-                      className={`w-full ${
-                        errors.productName ? "border-red-500" : ""
-                      }`}
-                    />
-                    {errors.productName && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.productName.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Price
-                    </label>
-                    <Input
-                      {...register("price", {
-                        required: "Price is required",
-                        pattern: {
-                          value: /^[0-9]+(\.[0-9]{1,2})?$/,
-                          message: "Enter a valid price",
-                        },
-                      })}
-                      type="number"
-                      placeholder="99.99"
-                      className={`w-full ${
-                        errors.price ? "border-red-500" : ""
-                      }`}
-                    />
-                    {errors.price && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.price.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Quantity
-                    </label>
-                    <Input
-                      {...register("quantity", {
-                        required: "quantity is required",
-                      })}
-                      type="number"
-                      placeholder="99"
-                      className={`w-full ${
-                        errors.price ? "border-red-500" : ""
-                      }`}
-                    />
-                    {errors.quantity && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.quantity.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Category
-                    </label>
-                    <Input
-                      {...register("category", {
-                        required: "Category is required",
-                      })}
-                      placeholder="Electronics"
-                      className={`w-full ${
-                        errors.category ? "border-red-500" : ""
-                      }`}
-                    />
-                    {errors.category && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.category.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Stock Status
-                    </label>
-                    <select
-                      {...register("stockStatus", {
-                        required: "Stock status is required",
-                      })}
-                      className="w-full border rounded-md p-2"
-                    >
-                      <option value="In Stock">In Stock</option>
-                      <option value="Out of Stock">Out of Stock</option>
-                    </select>
-                    {errors.stockStatus && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.stockStatus.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
+                <Formfield
+                  control={control}
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                  getValues={getValues}
+                  imagePreviews={imagePreviews}
+                  setImagePreviews={setImagePreviews}
+                  errorMessage={errorMessage}
+                  setErrorMessage={setErrorMessage}
+                  handleImageChange={handleImageChange}
+                  removeImage={removeImage}
+                />
               </div>
 
               <div className="pt-6 border-t border-gray-200">
@@ -217,15 +157,17 @@ function AddProduct() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => navigate("/admin/products")}
+                    onClick={() => navigate(-1)}
+                    disabled={isLoading} // Disable when loading
                   >
                     Cancel
                   </Button>
                   <Button
                     type="submit"
-                    className="bg-teal-500 hover:bg-teal-600 text-white px-8"
+                    className="bg-[#2F71F0] hover:bg-[#2F71F0]/90 text-white px-8"
+                    disabled={isLoading} // Disable when loading
                   >
-                    Add Product
+                    {isLoading ? "Adding..." : "Add Product"}
                   </Button>
                 </div>
               </div>

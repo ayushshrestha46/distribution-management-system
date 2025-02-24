@@ -91,3 +91,14 @@
     @apply p-4 rounded-xl transition-all duration-300 flex flex-col items-center gap-3 border hover:scale-105;
   }
 }
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

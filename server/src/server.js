@@ -3,9 +3,16 @@ dotenv.config()
 import connectDB from './config/dbconnect.js'
 import http from 'http'
 import app from './app.js'
+import cloudinary from "cloudinary";
+
+
 
 const server = http.createServer(app);
-
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 connectDB()
   .then(() => {
     server.on('error', (error) => {

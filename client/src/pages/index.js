@@ -1,5 +1,6 @@
 import AdminDashboardPage from "./AdminDashboardPage";
 import HomePage from "./HomePage";
+import DashboardPage from "./DashboardPage";
 
 
-export { AdminDashboardPage as DashboardPage, HomePage };
+export { AdminDashboardPage , DashboardPage, HomePage };

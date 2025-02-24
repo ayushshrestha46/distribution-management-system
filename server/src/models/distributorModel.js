@@ -1,4 +1,3 @@
-
 import mongoose from "mongoose";
 
 const DistributorSchema = new mongoose.Schema(
@@ -12,7 +11,7 @@ const DistributorSchema = new mongoose.Schema(
     warehouseDetails: {
       // Warehouse information
       address: { type: String, required: true },
-  
+
       contactPerson: { type: String, required: true }, // Contact person for the warehouse
     },
     zipCode: {
@@ -27,10 +26,13 @@ const DistributorSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    firstlogin: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );
-
 
 const Distributor = mongoose.model("Distributor", DistributorSchema);
 

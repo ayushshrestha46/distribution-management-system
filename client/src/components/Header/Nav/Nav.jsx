@@ -6,7 +6,6 @@ import { LogoutButton } from "@/components";
 const Nav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const user = useSelector((state) => state.auth.user);
-  console.log(user);
 
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50">
@@ -71,17 +70,6 @@ const Nav = () => {
               </>
           
             )}
-            {
-              user.role === 'admin' && (
-                <Link
-                    to="/admin"
-                    className="flex items-center space-x-1 px-4 py-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
-                  >
-                    {/* <LogIn className="h-4 w-4" /> */}
-                    <span>Dashboard</span>
-                  </Link>
-              )
-            }
           </div>
           <button
             className="md:hidden"

@@ -11,8 +11,7 @@ import { sendToken } from "../utils/jwt.js";
 
 const registerUser = asyncHandler(async (req, res, next) => {
   try {
-    const { name, email, password, shop } = req.body;
-    console.log(req.body);
+    const { name, email, password, address, phone } = req.body;
 
     if (!name) {
       return next(new ErrorHandler("Name cannot be empty", 400));
@@ -37,7 +36,8 @@ const registerUser = asyncHandler(async (req, res, next) => {
       name,
       email,
       password,
-      shop,
+      address,
+      phone,
     };
 
     const activationToken = createActivationToken(user);
@@ -50,7 +50,6 @@ const registerUser = asyncHandler(async (req, res, next) => {
 
     const mailPath = path.join(currentDirectory, "../mails/activationMail.ejs");
 
-    // console.log('This is the mailPath', mailPath);
     const html = await ejs.renderFile(mailPath, data);
 
     // Send mail function call
@@ -81,14 +80,11 @@ const activateUser = asyncHandler(async (req, res, next) => {
 
     const newUser = jwt.verify(activation_token, process.env.ACTIVATION_SECRET);
 
-    // console.log(newUser);
-    // console.log(newUser.activationCode);
     if (newUser.activationCode !== activation_code) {
       return next(new ErrorHandler("Invalid activation Code", 400));
     }
 
-    const { name, email, password, shop } = newUser?.userdata;
-    console.log(newUser?.userdata);
+    const { name, email, password, address, phone } = newUser?.userdata;
 
     const existUser = await User.findOne({ email });
 
@@ -100,7 +96,8 @@ const activateUser = asyncHandler(async (req, res, next) => {
       name,
       email,
       password,
-      shop,
+      address,
+      phone,
     });
 
     res.status(201).json({

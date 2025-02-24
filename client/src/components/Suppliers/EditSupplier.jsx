@@ -1,27 +1,38 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-  useAddSupplierMutation,
-  useGetAllSupplierQuery,
+  useEditSupplierMutation,
+  useGetSingleSupplierQuery,
 } from "@/app/slices/supplierApiSlice";
+
 import SupplierForm from "./SupplierForm ";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
-function AddSupplier() {
+function EditSupplier() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [addSupplier, { isLoading }] = useAddSupplierMutation();
-  const [selectedImage, setSelectedImage] = useState("");
-  const { refetch } = useGetAllSupplierQuery();
+
+  const {
+    data: supplier,
+    isLoading: isFetching,
+    refetch,
+  } = useGetSingleSupplierQuery(id);
+
+  const [updateSupplier, { isLoading }] = useEditSupplierMutation();
+  const [selectedImage, setSelectedImage] = useState();
+  const distributorData = supplier?.distributor || {};
 
   const handleSubmit = async (data) => {
+    data.id = id;
+
     try {
-      const response = await addSupplier({
+      const response = await updateSupplier({
         ...data,
         avatar: selectedImage,
       }).unwrap();
       if (response.success) {
         refetch();
-        toast.success("Supplier Added Successfully");
+        toast.success("Supplier Updated Successfully");
         navigate("/admin/suppliers");
       }
     } catch (error) {
@@ -48,8 +59,13 @@ function AddSupplier() {
     }
   };
 
+  if (isFetching) return <div>Loading...</div>;
+
   return (
     <SupplierForm
+      initialData={distributorData}
+      initialImage={distributorData?.user?.avatar?.url}
+      isEdit={true}
       onSubmit={handleSubmit}
       onCancel={() => navigate(-1)}
       isLoading={isLoading}
@@ -58,5 +74,4 @@ function AddSupplier() {
     />
   );
 }
-
-export default AddSupplier;
+export default EditSupplier;

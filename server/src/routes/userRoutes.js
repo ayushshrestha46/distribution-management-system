@@ -1,10 +1,15 @@
 import express from "express";
 import AuthController from "../controllers/authController.js";
-import { isAuthenticated } from "../middlewares/auth.js";
+import { isAuthenticated} from "../middlewares/auth.js";
 
 const userRouter = express.Router();
 
 // ************************* AUTHENTICATION ROUTES **********************
+userRouter.put(
+  "/change-password",
+  isAuthenticated,
+  AuthController.changePassword
+);
 
 userRouter.post("/register", AuthController.registration);
 userRouter.post("/activate", AuthController.activation);

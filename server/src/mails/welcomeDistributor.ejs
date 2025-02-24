@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Account Activation - distro hub</title>
+    <title>Welcome to Distro Hub - Distributor Account</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -15,7 +15,7 @@
         align-items: center;
         height: 100vh;
       }
-      .activation-container {
+      .welcome-container {
         background-color: #ffffff;
         padding: 30px;
         border-radius: 10px;
@@ -32,19 +32,19 @@
         margin-bottom: 20px;
         font-size: 26px;
       }
-      .activation-code {
-        font-size: 36px;
-        color: #0056b3;
-        margin: 20px 0;
-        font-weight: bold;
-      }
       p {
         color: #555;
         line-height: 1.6;
       }
-      .info {
-        color: #6c757d;
-        margin-bottom: 20px;
+      .credentials {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 20px 0;
+        text-align: left;
+      }
+      .credentials p {
+        margin: 5px 0;
       }
       .btn {
         display: inline-block;
@@ -72,7 +72,7 @@
     </style>
   </head>
   <body>
-    <div class="activation-container">
+    <div class="welcome-container">
       <div class="tooth-icon">
         <?xml version="1.0" encoding="utf-8"?><svg
           version="1.1"
@@ -93,23 +93,27 @@
         </svg>
       </div>
 
-      <h1>Welcome to Distro Hub!</h1>
-      <p>Hello <%= user.name %>,</p>
+      <h1>Welcome to Distro Hub, <%= name %>!</h1>
       <p>
-        We are excited to have you onboard at Distro Hub, your trusted partner
-        for seamless supply chain management. To activate your account, please
-        use the code below:
+        We are thrilled to have you as a distributor for Distro Hub. Below are
+        your login credentials to access the system:
       </p>
-      <p class="activation-code"><%= activationCode %></p>
-      <p class="info">This code is valid for the next 5 minutes.</p>
-      <a href="http://localhost:3000/activate" class="btn">Activate Account</a>
+      <div class="credentials">
+        <p><strong>Email:</strong> <%= email %></p>
+        <p><strong>Password:</strong> <%= password %></p>
+      </div>
+      <p>
+        Please use the credentials above to log in to your account. We recommend
+        changing your password after your first login for security purposes.
+      </p>
+      <a href="http://localhost:3000/login" class="btn">Login to Your Account</a>
       <br />
       <p>
         If you have any questions or need assistance, feel free to contact us at
         <a href="mailto:admin@distro.com">admin@distro.com</a>.
       </p>
       <div class="footer">
-        <p>Stay Connected,</p>
+        <p>Stay connected,</p>
         <p>The Distro Hub Team</p>
       </div>
     </div>

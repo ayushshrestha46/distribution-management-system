@@ -1,31 +1,25 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
-  LayoutDashboard,
-  Truck,
   Users,
-  Warehouse,
-  Building2,
-  CircleDollarSign,
-  LineChart,
   ChevronRight,
-  PackagePlusIcon,
+  WarehouseIcon,
+  ShoppingCart,
+  BarChart3,
+  TruckIcon,
 } from "lucide-react";
-import { LogoutButton } from ".";
+import { LogoutButton } from "..";
 
-const Sidebar = () => {
+const DashboardSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const menuItems = [
-    { icon: LayoutDashboard, text: "Dashboard", path: "/admin" },
-    { icon: Building2, text: "Suppliers", path: "/admin/suppliers" },
-    { icon: PackagePlusIcon, text: "Products", path: "/admin/products" },
-    { icon: Truck, text: "Shipments", path: "/shipments" },
-    { icon: Users, text: "Customers", path: "/customers" },
-    // { icon: Warehouse, text: "Warehouses", path: "/warehouses" },
-    { icon: CircleDollarSign, text: "Finance", path: "/finance" },
-    { icon: LineChart, text: "Analytics", path: "/analytics" },
+    { icon: BarChart3, text: "Dashboard", count: null, path: "/dashboard" },
+    { icon: ShoppingCart, text: "Orders", count: 24, path: "/orders" },
+    { icon: WarehouseIcon, text: "Inventory", count: 156 },
+    { icon: TruckIcon, text: "Shipments", count: 8 },
+    { icon: Users, text: "Customers", count: 43 },
   ];
 
   return (
@@ -36,7 +30,7 @@ const Sidebar = () => {
             <Box className="h-6 w-6 text-white" />
           </div>
           <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
-            DistriHub
+         Dashboard
           </h1>
         </div>
 
@@ -52,9 +46,10 @@ const Sidebar = () => {
                     : "text-gray-600 hover:bg-gray-200"
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center justify-self-between gap-3">
                   <item.icon className="h-5 w-5" />
-                  <span className="font-medium">{item.text}</span>
+                  <span className="font-medium mr-2">{item.text} </span>
+                  <span className="font-medium">{item?.count}</span>
                 </div>
                 {location.pathname === item.path && (
                   <ChevronRight className="h-4 w-4" />
@@ -76,4 +71,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default DashboardSidebar;
