@@ -18,6 +18,7 @@ distributorRouter.get(
   DistributorController.getDistributorProfile
 );
 distributorRouter.get("/:id", DistributorController.fetchSingleDistributor);
+distributorRouter.get("/distributor-profile", isAuthenticated, DistributorController.getDistributorProfile);
 distributorRouter.put(
   "/:id",
   isAuthenticated,

@@ -27,7 +27,6 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
       const res = await storeLogin(data).unwrap();
-      console.log("Response:", res);
   
       dispatch(setCredentials({ user: res.user }));
       if(res.user.role === 'user'){
@@ -36,7 +35,7 @@ const Login = () => {
         navigate('/admin')
       }
       else if (res.user.role === 'distributor'){
-        navigate('/dashboard')
+        navigate('/distributor')
       }
       toast.success("Login Successful");
     } catch (error) {

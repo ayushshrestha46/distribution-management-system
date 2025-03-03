@@ -2,11 +2,15 @@ import { asyncHandler } from "../middlewares/asyncHandler.js";
 import Product from "../models/productModel.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import cloudinary from "cloudinary";
+import Distributor from "../models/distributorModel.js";
+
 
 class ProductController {
   static createProduct = asyncHandler(async (req, res, next) => {
     try {
       const { name, description, price, images, category, quantity } = req.body;
+      const distributor = await Distributor.findOne({ user: req.user._id });
+
       const product = await Product.findOne({ name: name });
       if (product) {
         return next(new ErrorHandler("Product name already exists", 400));
@@ -31,7 +35,7 @@ class ProductController {
       const newProduct = await Product.create({
         name,
         description,
-        owner: req.user._id,
+        owner: distributor._id,
         price,
         category,
         quantity,
@@ -85,9 +89,9 @@ class ProductController {
 
   static updateProductDetails = asyncHandler(async (req, res, next) => {
     try {
-      const { name, description, price,  category, quantity } = req.body;
-    console.log(req.body);
-    
+      const { name, description, price, category, quantity } = req.body;
+      console.log(req.body);
+
       const id = req.params.id;
       const product = await Product.findById(id);
       if (!product) {

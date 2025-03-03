@@ -4,7 +4,6 @@ import {
   LayoutDashboard,
   Truck,
   Users,
-  Warehouse,
   Building2,
   CircleDollarSign,
   LineChart,
@@ -20,7 +19,7 @@ const Sidebar = () => {
   const menuItems = [
     { icon: LayoutDashboard, text: "Dashboard", path: "/admin" },
     { icon: Building2, text: "Suppliers", path: "/admin/suppliers" },
-    { icon: PackagePlusIcon, text: "Products", path: "/admin/products" },
+ 
     { icon: Truck, text: "Shipments", path: "/shipments" },
     { icon: Users, text: "Customers", path: "/customers" },
     // { icon: Warehouse, text: "Warehouses", path: "/warehouses" },

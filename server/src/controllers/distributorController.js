@@ -284,6 +284,20 @@ class DistributorController {
       return next(new ErrorHandler(error.message, 500));
     }
   });
+
+  static getDistributorProfile = asyncHandler(async(req,res,next) =>{
+    const id = req.user?._id;
+    const distributor = await Distributor.findOne({user:id}).populate('user')
+    if(!distributor){
+      return next(new ErrorHandler("Distributor not found", 404))
+    }
+    return res.status(200).json({
+      success:true,
+      message: "Distributor Profile fetched",
+      distributor
+    })
+  })
+
   static deleteDistributor = asyncHandler(async (req, res, next) => {
     try {
     } catch (error) {

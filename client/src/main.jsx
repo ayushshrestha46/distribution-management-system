@@ -17,11 +17,12 @@ import {
   EditProduct,
   AdminDashboard,
   PageNotFound,
+  Distributor,
 } from "./components";
 import { StrictMode } from "react";
 import AuthLayout from "./routes/AuthLayout";
 
-import { DashboardPage, HomePage } from "./pages";
+import { DashboardPage, DistributorPage, HomePage } from "./pages";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminLayout from "./routes/AdminLayout";
 
@@ -128,7 +129,31 @@ const router = createBrowserRouter([
         ],
       },
 
-      // DashBoard
+      // Distributor
+      {
+        path: "/distributor",
+        element: <DistributorPage />,
+        children: [
+          {
+            index: true,
+            element: <Distributor />,
+          },
+          {
+            path: "inventory",
+            element: <ProductList />,
+          },
+          {
+            path: "add-product",
+            element: <AddProduct />,
+          },
+          {
+            path: "edit-product/:id",
+            element: <EditProduct />,
+          },
+        ],
+      },
+
+      //Dashboard
       {
         path: "/dashboard",
         element: <DashboardPage />,
@@ -137,48 +162,9 @@ const router = createBrowserRouter([
             index: true,
             element: <Dashboard />,
           },
+
           {
-            path: "suppliers",
-            element: (
-              <AdminLayout>
-                <SupplierList />
-              </AdminLayout>
-            ),
-          },
-          {
-            path: "add-supplier",
-            element: (
-              <AdminLayout>
-                <AddSupplier />
-              </AdminLayout>
-            ),
-          },
-          {
-            path: "edit-supplier/:id",
-            element: (
-              <AdminLayout>
-                <EditSupplier />
-              </AdminLayout>
-            ),
-          },
-          {
-            path: "products",
-            element: (
-              <AdminLayout>
-                <ProductList />
-              </AdminLayout>
-            ),
-          },
-          {
-            path: "add-product",
-            element: (
-              <AdminLayout>
-                <AddProduct />
-              </AdminLayout>
-            ),
-          },
-          {
-            path: "edit-product/:id",
+            path: "",
             element: (
               <AdminLayout>
                 <EditProduct />

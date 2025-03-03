@@ -171,6 +171,16 @@ class AuthController {
     try {
       const { currentPassword, newPassword } = req.body;
       const user = await User.findById(req.user._id).select("+password");
+      const distributorUser = await Distributor.findOne({user:user._id});
+      if(distributorUser){
+        await Distributor.findByIdAndUpdate(
+          {id:distributorUser._id},
+          {
+            firstLogin: false
+          },
+          { new: true, runValidators: true }
+        );
+      }
       const passwordMatch = user.comparePassword(currentPassword);
       if (!passwordMatch) {
         return next(new ErrorHandler("Password is incorrect"));
@@ -178,6 +188,7 @@ class AuthController {
       if (currentPassword === newPassword) {
         return next(new ErrorHandler("New password is already used", 400));
       }
+
       // Now update the old password with new password
       user.password = newPassword;
       await user.save();

@@ -7,17 +7,13 @@ const ProductSchema = new mongoose.Schema({
     unique: [true, "Product name already exists"],
     trim: true,
   },
-  // category: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "Category",
-  // },
   category: {
     type: String,
     trim:true
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Distributor",
   },
   isActive: {
     type: Boolean,

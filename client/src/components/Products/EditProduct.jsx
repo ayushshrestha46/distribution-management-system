@@ -31,7 +31,7 @@ export default function EditProduct() {
   } = useGetSingleProductQuery(id);
   const { refetch } = useGetAllProductQuery();
 
-  const product = productData?.product || {}; // Default to empty object
+  const product = productData?.product || {}; 
 
   const {
     control,
@@ -65,14 +65,14 @@ export default function EditProduct() {
       const response = await updateProduct({
         ...data,
         id,
-        images: [...existingImages, ...imagePreviews], // Combine existing and new images
+        images: [...existingImages, ...imagePreviews], 
       }).unwrap();
       if (response.success) {
         refetch();
         editrefetch();
         reset();
         toast.success(response.message);
-        navigate("/admin/products");
+        navigate("/distributor/inventory");
       }
     } catch (error) {
       console.error("Error updating product:", error);
@@ -102,7 +102,6 @@ export default function EditProduct() {
 
   const removeImage = (index, isNewImage) => {
     if (isNewImage) {
-      // Remove from new images
       setImagePreviews((prev) => prev.filter((_, i) => i !== index));
       const currentImages = getValues("images") || [];
       setValue(
@@ -110,7 +109,6 @@ export default function EditProduct() {
         currentImages.filter((_, i) => i !== index)
       );
     } else {
-      // Remove from existing images
       setExistingImages((prev) => prev.filter((_, i) => i !== index));
     }
   };
@@ -169,7 +167,7 @@ export default function EditProduct() {
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white"
+                  className="bg-[#2867EC] hover:bg-[#2867EC]/90 text-white"
                   disabled={isUpdating}
                 >
                   {isUpdating ? "Updating..." : "Update Product Entry"}

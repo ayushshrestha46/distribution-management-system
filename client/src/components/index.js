@@ -5,7 +5,7 @@ import Activate from "./Activate";
 import Nav from "./Header/Nav/NavBar";
 import Footer from "./Footer/Footer";
 import Sidebar from "./Sidebar";
-import Dashboard from "./Dashboard/Dashboard";
+import Distributor from "./Distributor/DistributorSidebar";
 import SupplierList from "./Suppliers/SupplierList";
 import AddSupplier from "./Suppliers/AddSupplier";
 import EditSupplier from "./Suppliers/EditSupplier";
@@ -16,7 +16,8 @@ import EditProduct from "./Products/EditProduct";
 import AdminDashboard from "./Admin/AdminDashboard";
 import ChangePassword from "./ChangePassword";
 import PageNotFound from "./PageNotFound";
-import DashboardSidebar from "./Dashboard/DashboardSidebar";
+import DashboardSidebar from "./Distributor/Distributor";
+import Dashboard from "./Dashboard/Dashboard";
 
 export {
   Login,
@@ -34,6 +35,7 @@ export {
   EditProduct,
   AdminDashboard,
   Dashboard,
+  Distributor,
   PageNotFound,
   ChangePassword,
   DashboardSidebar,

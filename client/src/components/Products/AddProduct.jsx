@@ -100,11 +100,12 @@ function AddProduct() {
       const res = await addProduct(addData).unwrap();
       refetch();
       reset();
-      toast.success(res.message);
       setImagePreviews([]);
+      toast.success(res.message);
+      navigate('/distributor/inventory')
     } catch (error) {
-      console.error("Error creating journal:", error);
-      toast.error(error?.data?.message || "Failed to create journal entry");
+      console.error("Error creating Product:", error);
+      toast.error(error?.data?.message || "Failed to create Product entry");
     }
   };
 

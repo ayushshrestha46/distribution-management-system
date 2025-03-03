@@ -113,8 +113,6 @@ export default function Formfield({
             Max size: 5MB per image
           </p>
         </div>
-{console.log(existingImages)
-}
         <div className="space-y-2">
           {/* Display existing images */}
           {existingImages?.map((preview, index) => (
@@ -122,7 +120,7 @@ export default function Formfield({
               <img
                 src={preview}
                 alt={`Preview ${index + 1}`}
-                className="h-[120px] w-full object-cover rounded-md"
+                className="h-[120px] justify-self-center  object-cover rounded-md"
               />
               <Button
                 type="button"

@@ -28,9 +28,10 @@ const stats = {
 function ProductList() {
   const { data } = useGetAllProductQuery();
   const navigate = useNavigate();
+  console.log(data);
   const products = Array.isArray(data?.products) ? data.products : [];
   const allProducts = [...products].reverse();
-  const inStock = allProducts.filter((product) => product.quantity > 0).length;
+  const inStock = allProducts.filter((product) => product?.quantity > 0).length;
   const outStock = products.length - inStock
   const categories = new Set(allProducts.map((product) => product.category));
   const categoryCount = categories.size;
@@ -55,7 +56,7 @@ function ProductList() {
                   Fresh stock updated – grab yours now!
                 </p>
               </div>
-              <Link to="/admin/add-product" className="w-full sm:w-auto">
+              <Link to="/distributor/add-product" className="w-full sm:w-auto">
                 <Button className="bg-[#2F71F0] hover:bg-[#2F71F0]/90 text-white px-8">
                   <LayoutGrid className="mr-2 h-4 w-4" />
                   Add Product
@@ -100,7 +101,7 @@ function ProductList() {
 
             {/* Product Card */}
 
-            {allProducts.map((product) => (
+            {allProducts?.map((product) => (
               <div
                 key={product._id}
                 className="bg-white rounded-xl shadow-sm  mb-4"
@@ -135,7 +136,7 @@ function ProductList() {
                         onClick={() => {
                           // setIsDialogOpen(false);
 
-                          navigate(`/admin/edit-product/${product._id}`);
+                          navigate(`/distributor/edit-product/${product._id}`);
                         }}
                       >
                         {" "}
@@ -209,7 +210,7 @@ function ProductList() {
                       <div className="flex items-center gap-2 text-sm text-gray-500 bg-gray-50 px-3 py-2 rounded-md">
                         <User className="h-4 w-4" />
                         <span className="font-mono">
-                          Owner: {product.owner.name}
+                          Owner: {product.owner?.name}
                         </span>
                       </div>
                     </div>

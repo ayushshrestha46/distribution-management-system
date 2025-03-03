@@ -15,9 +15,9 @@ const DashboardSidebar = () => {
   const navigate = useNavigate();
 
   const menuItems = [
-    { icon: BarChart3, text: "Dashboard", count: null, path: "/dashboard" },
+    { icon: BarChart3, text: "Dashboard", count: null, path: "/distributor" },
+    { icon: WarehouseIcon, text: "Inventories", path: "/distributor/inventory" },
     { icon: ShoppingCart, text: "Orders", count: 24, path: "/orders" },
-    { icon: WarehouseIcon, text: "Inventory", count: 156 },
     { icon: TruckIcon, text: "Shipments", count: 8 },
     { icon: Users, text: "Customers", count: 43 },
   ];
@@ -30,7 +30,7 @@ const DashboardSidebar = () => {
             <Box className="h-6 w-6 text-white" />
           </div>
           <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
-         Dashboard
+            Dashboard
           </h1>
         </div>
 

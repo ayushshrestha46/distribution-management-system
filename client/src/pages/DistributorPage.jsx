@@ -1,15 +1,15 @@
 import { DashboardSidebar, AdminNav } from "../components";
 import { Outlet } from "react-router-dom";
-const DashboardPage = () => {
+const DistributorPage = () => {
   return (
     <div className="flex">
-      {/* <DashboardSidebar /> */}
-      {/* <AdminNav/> */}
+      <DashboardSidebar />
+      <AdminNav />
       <div className=" w-full">
-      <Outlet/>
+        <Outlet />
       </div>
     </div>
   );
-}; 
+};
 
-export default DashboardPage;
+export default DistributorPage;
