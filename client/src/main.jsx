@@ -18,6 +18,20 @@ import {
   AdminDashboard,
   PageNotFound,
   Distributor,
+  Cart,
+  Checkout,
+  Request,
+  ShopOrders,
+  Shipments,
+  DistributorOrders,
+  AdminShipments,
+  ProductDetails,
+  AdminAllSupplier,
+  AdminProduct,
+  ViewSupplier,
+  TermsOfService,
+  PrivacyPolicy1,
+  Support,
 } from "./components";
 import { StrictMode } from "react";
 import AuthLayout from "./routes/AuthLayout";
@@ -25,6 +39,7 @@ import AuthLayout from "./routes/AuthLayout";
 import { DashboardPage, DistributorPage, HomePage } from "./pages";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminLayout from "./routes/AdminLayout";
+import Profile from "./components/Profile";
 
 const router = createBrowserRouter([
   {
@@ -65,7 +80,40 @@ const router = createBrowserRouter([
           </AuthLayout>
         ),
       },
+      {
+        path: "/profile",
+        element: (
+          <AuthLayout authentication={true}>
+            <Profile />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/terms",
+        element: (
+          <AuthLayout authentication={false}>
+            <TermsOfService />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/privacy",
+        element: (
+          <AuthLayout authentication={false}>
+            <PrivacyPolicy1 />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/support",
+        element: (
+          <AuthLayout authentication={false}>
+            <Support />
+          </AuthLayout>
+        ),
+      },
 
+      //Admin
       {
         path: "/admin",
         element: <AdminDashboardPage />,
@@ -75,6 +123,14 @@ const router = createBrowserRouter([
             element: (
               <AdminLayout>
                 <AdminDashboard />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: "inventories",
+            element: (
+              <AdminLayout>
+                <AdminProduct />
               </AdminLayout>
             ),
           },
@@ -91,6 +147,14 @@ const router = createBrowserRouter([
             element: (
               <AdminLayout>
                 <AddSupplier />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: "customers",
+            element: (
+              <AdminLayout>
+                <AdminAllSupplier />
               </AdminLayout>
             ),
           },
@@ -126,6 +190,22 @@ const router = createBrowserRouter([
               </AdminLayout>
             ),
           },
+          {
+            path: "request",
+            element: (
+              <AdminLayout>
+                <Request />
+              </AdminLayout>
+            ),
+          },
+          {
+            path: "shipments",
+            element: (
+              <AdminLayout>
+                <AdminShipments />
+              </AdminLayout>
+            ),
+          },
         ],
       },
 
@@ -150,6 +230,14 @@ const router = createBrowserRouter([
             path: "edit-product/:id",
             element: <EditProduct />,
           },
+          {
+            path: "orders",
+            element: <DistributorOrders />,
+          },
+          {
+            path: "shipment",
+            element: <Shipments />,
+          },
         ],
       },
 
@@ -162,14 +250,25 @@ const router = createBrowserRouter([
             index: true,
             element: <Dashboard />,
           },
-
           {
-            path: "",
-            element: (
-              <AdminLayout>
-                <EditProduct />
-              </AdminLayout>
-            ),
+            path: "cart",
+            element: <Cart />,
+          },
+          {
+            path: "product/:id",
+            element: <ProductDetails />,
+          },
+          {
+            path: "checkout",
+            element: <Checkout />,
+          },
+          {
+            path: "orders",
+            element: <ShopOrders />,
+          },
+          {
+            path: "supplier",
+            element: <ViewSupplier />,
           },
         ],
       },

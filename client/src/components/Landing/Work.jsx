@@ -2,7 +2,7 @@ import { BoxesIcon, Network, Truck, CheckCircle2 } from "lucide-react"; // Assum
 
 export const Work = () => {
   return (
-    <section className="py-20">
+    <section className="py-20 md:px-10" id="solutions">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">

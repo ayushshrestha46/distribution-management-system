@@ -156,7 +156,7 @@ function SupplierForm({
                       </p>
                     )}
                   </div>
-
+{/* 
                   {!isEdit && (
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">
@@ -182,7 +182,7 @@ function SupplierForm({
                         </p>
                       )}
                     </div>
-                  )}
+                  )} */}
 
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">

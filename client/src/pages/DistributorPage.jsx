@@ -1,12 +1,13 @@
-import { DashboardSidebar, AdminNav } from "../components";
+import { DisNavbar, DistributorSidebar } from "../components";
 import { Outlet } from "react-router-dom";
 const DistributorPage = () => {
   return (
     <div className="flex">
-      <DashboardSidebar />
-      <AdminNav />
+      {/* <AdminNav /> */}
+      <DistributorSidebar />
       <div className=" w-full">
-        <Outlet />
+        <DisNavbar />
+          <Outlet />
       </div>
     </div>
   );

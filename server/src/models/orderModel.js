@@ -1,15 +1,15 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const orderSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User',
+      ref: "User",
     },
-    distributor:{
-      type:mongoose.Schema.Types.ObjectId,
-      ref:'Distributor',
+    distributor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Distributor",
     },
     orderItems: [
       {
@@ -20,7 +20,7 @@ const orderSchema = mongoose.Schema(
         product: {
           type: mongoose.Schema.Types.ObjectId,
           required: true,
-          ref: 'Product',
+          ref: "Product",
         },
       },
     ],
@@ -32,18 +32,14 @@ const orderSchema = mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      required: true,
+      enum: ["cash", "Khalti"],
+      default: "cash",
     },
     paymentResult: {
       id: { type: String },
       status: { type: String },
       update_time: { type: String },
       email_address: { type: String },
-    },
-    itemsPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
     },
     taxPrice: {
       type: Number,
@@ -60,9 +56,14 @@ const orderSchema = mongoose.Schema(
       required: true,
       default: 0.0,
     },
+    status: {
+      type: String,
+      enum: ["pending", "process", "delivered", "rejected", "cancelled"],
+      default: "pending",
+      required: true,
+    },
     isPaid: {
       type: Boolean,
-      required: true,
       default: false,
     },
     paidAt: {
@@ -70,7 +71,6 @@ const orderSchema = mongoose.Schema(
     },
     isDelivered: {
       type: Boolean,
-      required: true,
       default: false,
     },
     deliveredAt: {
@@ -82,6 +82,6 @@ const orderSchema = mongoose.Schema(
   }
 );
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.model("Order", orderSchema);
 
 export default Order;

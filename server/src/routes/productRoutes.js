@@ -10,16 +10,18 @@ productRouter.post(
   authorizeRoles("distributor"),
   ProductController.createProduct
 );
+
 productRouter.get(
-  "/",
+  "/distributor-products",
   isAuthenticated,
-  authorizeRoles("distributor"),
-  ProductController.fetchAllProducts
+  authorizeRoles("shop", "distributor"),
+  ProductController.fetchDistributorProduct
 );
+
 productRouter.get(
   "/:id",
   isAuthenticated,
-  authorizeRoles("distributor"),
+  authorizeRoles("distributor", "shop"),
   ProductController.fetchSingleProduct
 );
 productRouter.put(
@@ -28,11 +30,12 @@ productRouter.put(
   authorizeRoles("distributor"),
   ProductController.updateProductDetails
 );
-productRouter.patch(
-  "/:id",
-  isAuthenticated,
-  authorizeRoles,
-  ProductController.updateProductStock
-);
+
+// productRouter.patch(
+//   "/:id",
+//   isAuthenticated,
+//   authorizeRoles("distributor"),
+//   ProductController.updateProductStock
+// );
 
 export default productRouter;

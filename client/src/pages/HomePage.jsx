@@ -8,21 +8,22 @@ import {
   Seamless,
   Testimonial,
 } from "../components/Landing";
-import { Nav, Footer } from "../components/index";
+import { Nav, Footer, ScrollToTop } from "../components/index";
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white ">
       <Nav />
       <Hero />
       <Interactive />
       <StatsSection />
-      <ServicesSection />
+      <ServicesSection  />
       <Work />
       <BenefitCards />
       <Seamless />
       <Testimonial />
       <Footer />
+      <ScrollToTop/>
     </div>
   );
 };

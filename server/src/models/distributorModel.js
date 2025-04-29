@@ -23,8 +23,7 @@ const DistributorSchema = new mongoose.Schema(
       default: 0,
     },
     vat: {
-      type: Number,
-      default: 0,
+      type: String,
     },
     firstlogin: {
       type: Boolean,

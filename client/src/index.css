@@ -75,7 +75,7 @@
   }
 
   .stat-card::before {
-    content: '';
+    content: "";
     @apply absolute top-0 right-0 w-32 h-32 bg-gradient-to-br opacity-5 rounded-full -mr-16 -mt-16 transition-transform duration-300;
   }
 
@@ -92,13 +92,30 @@
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-only,
+  .print-only * {
+    visibility: visible;
+  }
+  .print-only {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .rotate-30 {
+    transform: rotate(-30deg);
   }
 }

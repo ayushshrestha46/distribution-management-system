@@ -42,7 +42,7 @@ function SupplierList() {
   const sortedSuppliers = [...suppliers].reverse();
 
   const verifiedSuppliers = suppliers.filter(
-    (supplier) => supplier.user.isVerified
+    (supplier) => supplier?.user?.isVerified
   ).length;
   const unverifiedSuppliers = suppliers.length - verifiedSuppliers;
 
@@ -161,7 +161,7 @@ function SupplierList() {
                         {/* {supplier.user?.email} */}
                       </p>
                     </div>
-                    {supplier.user?.isVerified ? (
+                    {supplier?.user?.isVerified ? (
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         <CheckCircle className="h-4 w-4 mr-1" />
                         Active

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Order Has Been Accepted - Distro Hub</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f8ff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .order-container {
+        background-color: #e69a9a;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 90%;
+        max-width: 500px;
+      }
+      h1 {
+        color: #c92222;
+        background-color: #d4edda;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        font-size: 26px;
+      }
+      p {
+        color: #555;
+        line-height: 1.6;
+      }
+      .order-details {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 20px 0;
+        text-align: left;
+      }
+      .order-details p {
+        margin: 5px 0;
+      }
+      .btn {
+        display: inline-block;
+        padding: 12px 25px;
+        background-color: #28a745;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+      .btn:hover {
+        background-color: #218838;
+      }
+      .footer {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #888;
+      }
+      .truck-icon {
+        font-size: 50px;
+        color: #0056b3;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="order-container">
+      <div class="truck-icon">
+        <?xml version="1.0" encoding="utf-8"?>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 640 512"
+          width="60"
+          height="60"
+          fill="#28a745"
+        >
+          <path
+            d="M624 352h-16V243.9c0-12.7-5.1-24.9-14.1-33.9L494 110.1c-9-9-21.2-14.1-33.9-14.1H416V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48v320c0 26.5 21.5 48 48 48h16c0 53 43 96 96 96s96-43 96-96h128c0 53 43 96 96 96s96-43 96-96h48c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zM160 464c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm320 0c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm80-208H416V144h44.1l99.9 99.9V256z"
+          />
+        </svg>
+      </div>
+
+      <h1>Your Order Has Been rejected!</h1>
+      <p>
+        Hello , <%= shopkeeperName %>! Unfortunately, Your recent order with
+        Distro Hub has been <span>rejected</span> by the distributor. Due to
+        internal reasons
+      </p>
+      <div class="order-details">
+        <p><strong>Order ID:</strong> <%= orderId %></p>
+        <p><strong>Total Amount:</strong> <%= totalPrice %></p>
+        <p><strong>Distributor:</strong> <%= distributorName %></p>
+      </div>
+      <p>
+        Hopefully, you will try later to place the order again through the
+        dashboard
+      </p>
+      <span
+        >You can contact <%= contactPerson %> via <%=distributorContact %> for
+        more details
+      </span>
+      <a href="http://localhost:3000/orders/<%= orderId %>" class="btn"
+        >View order</a
+      >
+      <br />
+      <p>
+        If you have any questions about your order, please contact us at
+        <a href="mailto:support@distro.com">support@distro.com</a>.
+      </p>
+      <div class="footer">
+        <p>Thank you for your business!</p>
+        <p>The Distro Hub Team</p>
+      </div>
+    </div>
+  </body>
+</html>

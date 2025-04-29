@@ -17,7 +17,7 @@ export const supplierApiSlice = apiSlice.injectEndpoints({
         url: `${supplier_url}/${data.id}`,
         method: "PUT",
         credentials: "include",
-        body:data,
+        body: data,
       }),
     }),
     getAllSupplier: builder.query({
@@ -25,21 +25,29 @@ export const supplierApiSlice = apiSlice.injectEndpoints({
         url: `${supplier_url}/`,
         method: "GET",
         body: data,
-        credentials: 'include'
+        credentials: "include",
       }),
     }),
-    getDistributorProfile : builder.query({
+    getDistributorProfile: builder.query({
       query: () => ({
         url: `${supplier_url}/distributor-profile`,
         method: "GET",
-        credentials: 'include'
+        credentials: "include",
       }),
     }),
     getSingleSupplier: builder.query({
-      query: ( id) => ({
+      query: (id) => ({
         url: `${supplier_url}/${id}`,
         method: "GET",
-        credentials: 'include'
+        credentials: "include",
+      }),
+    }),
+
+    getSupplierDashboardData: builder.query({
+      query: () => ({
+        url: `${supplier_url}/dashboard-data`,
+        method: "GET",
+        credentials: "include",
       }),
     }),
   }),
@@ -50,5 +58,6 @@ export const {
   useGetAllSupplierQuery,
   useGetSingleSupplierQuery,
   useEditSupplierMutation,
-  useGetDistributorProfileQuery
+  useGetDistributorProfileQuery,
+  useGetSupplierDashboardDataQuery,
 } = supplierApiSlice;

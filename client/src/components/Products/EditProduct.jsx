@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
 import {
   useGetSingleProductQuery,
-  useGetAllProductQuery,
+  useGetDistributorProductsQuery,
   useEditProductMutation,
 } from "@/app/slices/productApiSlice";
 import Formfield from "./Formfield";
@@ -26,12 +26,12 @@ export default function EditProduct() {
   const [updateProduct, { isLoading: isUpdating }] = useEditProductMutation();
   const {
     data: productData,
-    refetch:editrefetch,
+    refetch: editrefetch,
     isLoading: isLoadingProduct,
   } = useGetSingleProductQuery(id);
-  const { refetch } = useGetAllProductQuery();
+  const { refetch } = useGetDistributorProductsQuery();
 
-  const product = productData?.product || {}; 
+  const product = productData?.product || {};
 
   const {
     control,
@@ -65,7 +65,7 @@ export default function EditProduct() {
       const response = await updateProduct({
         ...data,
         id,
-        images: [...existingImages, ...imagePreviews], 
+        images: [...existingImages, ...imagePreviews],
       }).unwrap();
       if (response.success) {
         refetch();
@@ -124,8 +124,8 @@ export default function EditProduct() {
   }
 
   return (
-    <ScrollArea className="h-screen">
-      <div className="min-h-screen bg-gray-50 mt-16 p-8">
+    <ScrollArea className="h-[calc(100vh-65px)]">
+      <div className="min-h-screen bg-gray-50  p-8">
         <div className="mb-5 ml-2">
           <Button variant="ghost" onClick={() => navigate(-1)} className="mb-1">
             <ArrowLeft className="mr-2 h-4 w-4" />

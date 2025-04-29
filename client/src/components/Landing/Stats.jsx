@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 export const StatsSection = () => {
   return (
-    <section className="bg-blue-900 text-white py-16">
+    <section className="bg-blue-900 text-white py-16 md:px-10">
       <div className="container mx-auto px-4">
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <StatCard number="1M+" text="Orders Processed" />

@@ -2,7 +2,7 @@ import { Clock, TrendingUp, Shield, Smartphone } from "lucide-react"; // Assumin
 
 export const BenefitCards = () => {
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-gray-50 md:px-10" id="choose">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">

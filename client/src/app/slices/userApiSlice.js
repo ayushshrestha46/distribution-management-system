@@ -8,7 +8,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
         url: `${user_url}/login`,
         method: "POST",
         body: data,
-        credentials: 'include'
+        credentials: "include",
       }),
     }),
 
@@ -25,7 +25,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
         url: `${user_url}/change-password`,
         method: "PUT",
         body: data,
-        credentials: 'include'
+        credentials: "include",
       }),
     }),
 
@@ -41,11 +41,55 @@ export const userApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: `${user_url}/logout`,
         method: "POST",
-        credentials: 'include'
+        credentials: "include",
       }),
     }),
+
+    requestDistributor: builder.mutation({
+      query: () => ({
+        url: `${user_url}/request-distributor`,
+        method: "PUT",
+        credentials: "include",
+      }),
+    }),
+
+    getUserProfile: builder.query({
+      query: () => ({
+        url: `${user_url}/get-profile`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+
+    getSuppliers: builder.query({
+      query: () => ({
+        url: `${user_url}/view-supplier`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+
+    updateUserProfile: builder.mutation({
+      query: (data) => ({
+        url: `${user_url}/update-profile`,
+        method: "PUT",
+        body: data,
+        credentials: "include",
+      }),
+    }),
+
+
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useActivateMutation, useLogoutMutation, useChangePasswordMutation } =
-  userApiSlice;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useActivateMutation,
+  useLogoutMutation,
+  useChangePasswordMutation,
+  useRequestDistributorMutation,
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
+  useGetSuppliersQuery
+} = userApiSlice;

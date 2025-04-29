@@ -3,7 +3,7 @@ import { Mail, Phone } from "lucide-react";
 const Top = () => {
   return (
     <>
-      <div className="bg-blue-900 text-white py-2">
+      <div className="bg-blue-900 text-white py-2 md:px-10">
         <div className="container mx-auto px-4 flex justify-between items-center text-sm">
           <div className="flex items-center space-x-4">
             <div className="flex items-center">

@@ -17,30 +17,40 @@ export const productApiSlice = apiSlice.injectEndpoints({
         url: `${product_url}/${data.id}`,
         method: "PUT",
         credentials: "include",
-        body:data,
-      }),
-    }),
-    getAllProduct: builder.query({
-      query: (data) => ({
-        url: `${product_url}/`,
-        method: "GET",
         body: data,
-        credentials: 'include'
       }),
     }),
+
     getSingleProduct: builder.query({
-      query: ( id) => ({
+      query: (id) => ({
         url: `${product_url}/${id}`,
         method: "GET",
-        credentials: 'include'
+        credentials: "include",
+      }),
+    }),
+    
+    getProducts: builder.query({
+      query: () => ({
+        url: `${product_url}/products-list`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+
+    getDistributorProducts: builder.query({
+      query: () => ({
+        url: `${product_url}/distributor-products`,
+        method: "GET",
+        credentials: "include",
       }),
     }),
   }),
 });
 
 export const {
-useAddProductMutation,
-useEditProductMutation,
-useGetAllProductQuery,
-useGetSingleProductQuery
+  useAddProductMutation,
+  useEditProductMutation,
+  useGetSingleProductQuery,
+  useGetProductsQuery,
+  useGetDistributorProductsQuery,
 } = productApiSlice;

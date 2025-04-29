@@ -1,6 +1,5 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  Box,
   LayoutDashboard,
   Truck,
   Users,
@@ -8,57 +7,107 @@ import {
   CircleDollarSign,
   LineChart,
   ChevronRight,
-  PackagePlusIcon,
+  Package,
+  ChevronDown,
+  User2,
+  Box,
 } from "lucide-react";
 import { LogoutButton } from ".";
+import { useState } from "react";
 
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [openMenu, setOpenMenu] = useState(null);
 
   const menuItems = [
     { icon: LayoutDashboard, text: "Dashboard", path: "/admin" },
+    { icon: Box, text: "Inventories", path: "/admin/inventories" },
     { icon: Building2, text: "Suppliers", path: "/admin/suppliers" },
- 
-    { icon: Truck, text: "Shipments", path: "/shipments" },
-    { icon: Users, text: "Customers", path: "/customers" },
-    // { icon: Warehouse, text: "Warehouses", path: "/warehouses" },
+    { icon: Truck, text: "Shipments", path: "/admin/shipments" },
+    {
+      icon: Users,
+      text: "Customers",
+      children: [
+        { icon: Users, text: "All Customers", path: "/admin/customers" },
+        { icon: User2, text: "Supplier Request", path: "/admin/request" },
+      ],
+    },
     { icon: CircleDollarSign, text: "Finance", path: "/finance" },
     { icon: LineChart, text: "Analytics", path: "/analytics" },
   ];
 
   return (
-    <div className="w-72 h-screen border-r border-gray-200 bg-white flex flex-col justify-between">
+    <div className="w-80 h-screen border-r border-gray-200 bg-white flex flex-col justify-between">
       <div>
         <div className="flex items-center gap-3 p-6 border-b border-gray-100">
-          <div className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
-            <Box className="h-6 w-6 text-white" />
-          </div>
-          <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
-            DistriHub
-          </h1>
+          <Link to="/admin" className="flex-shrink-0 flex items-center">
+            <Package className="h-8 w-8 text-blue-600 mr-3" />
+            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
+              DistriHub
+            </h1>
+          </Link>
         </div>
 
         <div className="p-4">
           <nav className="space-y-1">
             {menuItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => navigate(item.path)}
-                className={`flex items-center justify-between w-full p-3 rounded-xl transition-all duration-200 ${
-                  location.pathname === item.path
-                    ? "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 shadow-sm"
-                    : "text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <item.icon className="h-5 w-5" />
-                  <span className="font-medium">{item.text}</span>
-                </div>
-                {location.pathname === item.path && (
-                  <ChevronRight className="h-4 w-4" />
-                )}
-              </button>
+              <div key={index}>
+                {/* Parent Menu Item */}
+                <button
+                  onClick={() =>
+                    item.children
+                      ? setOpenMenu(openMenu === item.text ? null : item.text)
+                      : navigate(item.path)
+                  }
+                  className={`flex items-center justify-between w-full p-3 rounded-xl transition-all duration-200 ${
+                    location.pathname === item.path
+                      ? "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 shadow-sm"
+                      : "text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <item.icon className="h-5 w-5" />
+                    <span className="font-medium">{item.text}</span>
+                  </div>
+                  {item.children ? (
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform ${
+                        openMenu === item.text ? "rotate-180" : ""
+                      }`}
+                    />
+                  ) : (
+                    location.pathname === item.path && (
+                      <ChevronRight className="h-4 w-4" />
+                    )
+                  )}
+                </button>
+
+                {/* Submenu (Children) - Expands below */}
+                {item.children && openMenu === item.text && (
+                  <div className="ml-6 mt-1 space-y-1">
+                    {item.children.map((child, childIndex) => (
+                      <button
+                        key={childIndex}
+                        onClick={() => navigate(child.path)}
+                        className={`flex items-center justify-between w-full p-3 rounded-xl transition-all duration-200 ${
+                          location.pathname === child.path
+                            ? "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 shadow-sm"
+                            : "text-gray-600 hover:bg-gray-200"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <child.icon className="h-5 w-5" />
+                          <span className="font-medium">{child.text}</span>
+                        </div>
+                        {location.pathname === child.path && (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )} 
+              </div>
             ))}
           </nav>
         </div>

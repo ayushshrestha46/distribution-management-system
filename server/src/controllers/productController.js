@@ -3,7 +3,7 @@ import Product from "../models/productModel.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import cloudinary from "cloudinary";
 import Distributor from "../models/distributorModel.js";
-
+import User from "../models/userModel.js";
 
 class ProductController {
   static createProduct = asyncHandler(async (req, res, next) => {
@@ -51,25 +51,6 @@ class ProductController {
     }
   });
 
-  static fetchAllProducts = asyncHandler(async (req, res, next) => {
-    try {
-      const products = await Product.find().populate("owner");
-      if (!products) {
-        return res.status(200).json({
-          success: false,
-          message: "No Products found",
-        });
-      }
-      return res.status(200).json({
-        success: true,
-        message: "Products fetched successfully",
-        products,
-      });
-    } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
-    }
-  });
-
   static fetchSingleProduct = asyncHandler(async (req, res, next) => {
     try {
       const id = req.params.id;
@@ -81,6 +62,36 @@ class ProductController {
         succes: true,
         message: "Single Product Fetched",
         product,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  });
+
+  static fetchDistributorProduct = asyncHandler(async (req, res, next) => {
+    try {
+      const user = await User.findById(req.user._id);
+      if (!user) {
+        return next(new ErrorHandler("user not found", 400));
+      }
+      let products;
+      if (user.role === "shop") {
+        products = await Product.find({ owner: user.distributor }).populate(
+          "owner"
+        );
+      } else if (user.role === "distributor") {
+        const distributor = await Distributor.findOne({ user: req.user._id });
+        if (!distributor) {
+          return next(new ErrorHandler("Distributor not found", 400));
+        }
+        products = await Product.find({ owner: distributor._id }).populate(
+          "owner"
+        );
+      }
+      // Send the products as a response
+      return res.status(200).json({
+        success: true,
+        products,
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
@@ -145,10 +156,40 @@ class ProductController {
 
   static updateProductStock = asyncHandler(async (req, res, next) => {
     try {
+      const productId = req.params.id;
+      const { quantity } = req.body;
+      const product = await Product.findByIdAndUpdate(
+        productId,
+        {
+          quantity: quantity,
+        },
+        { new: true, runValidators: true }
+      );
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
   });
+
+  static fetchAddedProducts = asyncHandler(async (req, res, next) => {
+    try {
+      const distributor = await Distributor.findOne({ user: req.user._id });
+      if (!distributor) {
+        return next(new ErrorHandler("Distributor not found", 400));
+      }
+
+      const products = await Product.find({ owner: distributor._id }).populate(
+        "owner"
+      );
+      return res.status(200).json({
+        success: true,
+        message: "Products fetched for distributors",
+        products,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  });
+
   static deleteProduct = asyncHandler(async (req, res, next) => {
     try {
     } catch (error) {

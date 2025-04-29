@@ -26,6 +26,15 @@ const userSchema = new mongoose.Schema(
       minlength: [6, "Password must be at least 6 characters"],
       select: false,
     },
+    distributor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Distributor",
+    },
+    requestDistributor: {
+      type: String,
+      enum: ["pending", "process", "allocated"],
+      default: "pending",
+    },
     address: {
       type: String,
       required: true,
@@ -47,6 +56,14 @@ const userSchema = new mongoose.Schema(
     avatar: {
       public_id: String,
       url: String,
+    },
+    bio: {
+      type: String,
+      required: false,
+    },
+    isBanned: {
+      type: Boolean,
+      required: false,
     },
     paymentMethod: {
       type: String,

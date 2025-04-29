@@ -1,74 +1,114 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Box,
-  Users,
-  ChevronRight,
-  WarehouseIcon,
-  ShoppingCart,
-  BarChart3,
-  TruckIcon,
-} from "lucide-react";
-import { LogoutButton } from "..";
+import { useEffect, useState } from "react";
+import { TruckIcon, BoxIcon, ShoppingCart, Users } from "lucide-react";
+import { useGetDistributorProfileQuery } from "@/app/slices/supplierApiSlice";
 
-const DashboardSidebar = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
+import { ChangePassword, DistributorOrders } from "../index";
+import { ScrollArea } from "../ui/scroll-area";
+import { useGetSupplierDashboardDataQuery } from "@/app/slices/supplierApiSlice";
 
-  const menuItems = [
-    { icon: BarChart3, text: "Dashboard", count: null, path: "/distributor" },
-    { icon: WarehouseIcon, text: "Inventories", path: "/distributor/inventory" },
-    { icon: ShoppingCart, text: "Orders", count: 24, path: "/orders" },
-    { icon: TruckIcon, text: "Shipments", count: 8 },
-    { icon: Users, text: "Customers", count: 43 },
+function Dashboard() {
+  const { data, isLoading } = useGetDistributorProfileQuery();
+  const { data: dashboardData, isLoading: dataLoading } =
+    useGetSupplierDashboardDataQuery();
+  // console.log(dashboardData);
+  const isFirst = data?.distributor.firstlogin;
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+    if (isFirst === true) {
+      setOpen(true);
+    }
+  }, [isFirst]);
+
+  const dashboardCards = [
+    {
+      title: "Total Orders",
+      value: dataLoading? 'loading..': dashboardData?.orderCount,
+      change: "+12.5%",
+      trend: "up",
+      icon: ShoppingCart,
+    },
+    {
+      title: "Inventory Value",
+      value: dataLoading? 'loading..':`Rs. ${dashboardData?.totalInventoryPrice.toLocaleString(
+        "en-IN"
+      )}`,
+      change: "+8.2%",
+      trend: "up",
+      icon: BoxIcon,
+    },
+    {
+      title: "Active Shipments",
+      value: dataLoading? 'loading..':dashboardData?.orderInProcessCount,
+      change: "-3.1%",
+      trend: "down",
+      icon: TruckIcon,
+    },
+    {
+      title: "Customers",
+      value: dataLoading? 'loading..':dashboardData?.customerCount,
+      change: "+5.3%",
+      trend: "up",
+      icon: Users,
+    },
   ];
 
+  
+
+
+
+  const getStatusColor = (status) => {
+    const colors = {
+      pending: "bg-yellow-100 text-yellow-800",
+      "in-transit": "bg-blue-100 text-blue-800",
+      delivered: "bg-green-100 text-green-800",
+      "in-stock": "bg-green-100 text-green-800",
+      "low-stock": "bg-yellow-100 text-yellow-800",
+      "out-of-stock": "bg-red-100 text-red-800",
+    };
+    return colors[status] || "bg-gray-100 text-gray-800";
+  };
+
   return (
-    <div className="w-72 h-screen border-r border-gray-200 bg-white flex flex-col justify-between">
-      <div>
-        <div className="flex items-center gap-3 p-6 border-b border-gray-100">
-          <div className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
-            <Box className="h-6 w-6 text-white" />
+    <div className=" bg-gray-50">
+      <ChangePassword open={open} setOpen={setOpen} />
+      <ScrollArea className="flex-1 h-[calc(100vh-65px)]  ">
+        <div className=" p-8">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <p className="text-gray-500 my-1 mb-3">
+              Welcome back! Here's what's happening with your distribution
+              business today.
+            </p>
           </div>
-          <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
-            Dashboard
-          </h1>
-        </div>
+          <div className="space-y-6">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-4 gap-6">
+              {dashboardCards.map((card) => (
+                <div
+                  key={card.title}
+                  className="bg-white p-6 rounded-xl border border-gray-200"
+                >
+                  <card.icon className="w-8 h-8 text-blue-600" />
 
-        <div className="p-4">
-          <nav className="space-y-1">
-            {menuItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => navigate(item.path)}
-                className={`flex items-center justify-between w-full p-3 rounded-xl transition-all duration-200 ${
-                  location.pathname === item.path
-                    ? "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 shadow-sm"
-                    : "text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                <div className="flex items-center justify-self-between gap-3">
-                  <item.icon className="h-5 w-5" />
-                  <span className="font-medium mr-2">{item.text} </span>
-                  <span className="font-medium">{item?.count}</span>
+                  <h3 className="text-sm font-medium text-gray-500">
+                    {card.title}
+                  </h3>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">
+                    {card.value}
+                  </p>
                 </div>
-                {location.pathname === item.path && (
-                  <ChevronRight className="h-4 w-4" />
-                )}
-              </button>
-            ))}
-          </nav>
+              ))}
+            </div>
+            <DistributorOrders />
+          </div>
         </div>
-      </div>
-
-      {/* Logout Button */}
-      <div className="p-4 border-t border-gray-100">
-        <LogoutButton
-          className="bg-no w-full justify-start text-red-600 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50"
-          // isSidebarCollapsed={isSidebarCollapsed} // Pass this prop
-        />
-      </div>
+      </ScrollArea>
     </div>
   );
-};
+}
 
-export default DashboardSidebar;
+export default Dashboard;

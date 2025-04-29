@@ -1,10 +1,16 @@
 import { ArrowRight } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const user = useSelector((state) => state.auth?.user?.role) ;
+  const navigator = useNavigate();
+
   return (
     <>
       <div
-        className="relative bg-cover bg-center h-[600px]"
+        className="relative bg-cover bg-center h-[600px] md:px-10"
+        id="home"
         style={{
           backgroundImage:
             'url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80")',
@@ -22,9 +28,21 @@ const Hero = () => {
               logistics optimization.
             </p>
             <div className="flex space-x-4">
-              <button className="bg-blue-900 text-white px-8 py-3 rounded flex items-center hover:bg-blue-800 transition-colors">
-                Our Solutions <ArrowRight className="ml-2 w-4 h-4" />
-              </button>
+              {user === "shop" ? (
+                <button
+                  className="bg-blue-900 text-white px-8 py-3 rounded flex items-center hover:bg-blue-800 transition-colors"
+                  onClick={() => navigator("/dashboard")}
+                >
+                  Dashboard <ArrowRight className="ml-2 w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  className="bg-blue-900 text-white px-8 py-3 rounded flex items-center hover:bg-blue-800 transition-colors"
+                  onClick={() => navigator("/login")}
+                >
+                  Our Solutions <ArrowRight className="ml-2 w-4 h-4" />
+                </button>
+              )}
             </div>
           </div>
         </div>
