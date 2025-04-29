@@ -158,13 +158,23 @@ class ProductController {
     try {
       const productId = req.params.id;
       const { quantity } = req.body;
+
+      // Find the product by ID and update its quantity
       const product = await Product.findByIdAndUpdate(
         productId,
-        {
-          quantity: quantity,
-        },
+        { $set: { quantity: quantity } },
         { new: true, runValidators: true }
       );
+
+      if (!product) {
+        return next(new ErrorHandler("Product not found", 404));
+      }
+
+      res.status(200).json({
+        success: true,
+        data: product,
+        message: "Product stock updated successfully",
+      });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }

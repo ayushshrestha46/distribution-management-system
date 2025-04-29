@@ -31,11 +31,11 @@ productRouter.put(
   ProductController.updateProductDetails
 );
 
-// productRouter.patch(
-//   "/:id",
-//   isAuthenticated,
-//   authorizeRoles("distributor"),
-//   ProductController.updateProductStock
-// );
+productRouter.patch(
+  "/updateStock/:id",
+  isAuthenticated,
+  authorizeRoles("distributor"),
+  ProductController.updateProductStock
+);
 
 export default productRouter;

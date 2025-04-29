@@ -266,7 +266,7 @@ const ShopOrders = () => {
                     {["process", "delivered"].includes(order.status) &&
                       !order.isPaid && (
                         <Button
-                          onClick={() => initiatePayment({purchaseOrderId:order._id,amount:order.totalPrice, purchasOrderName:order.distributor.user.name })}
+                          onClick={() => initiatePayment({purchaseOrderId:order._id,amount:order.totalPrice, purchaseOrderName:order.distributor.user.name })}
                           disabled={paymentLoading}
                         >
                           {paymentLoading

@@ -264,7 +264,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
 
         <div className="flex justify-between items-center">
           <span className="text-xl font-bold text-blue-600">
-            ${product.price.toFixed(2)}
+            Rs. {product.price.toFixed(2)}
           </span>
           <Button
             className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2"

@@ -32,6 +32,7 @@ import {
   TermsOfService,
   PrivacyPolicy1,
   Support,
+  DistributorCustomer,
 } from "./components";
 import { StrictMode } from "react";
 import AuthLayout from "./routes/AuthLayout";
@@ -237,6 +238,10 @@ const router = createBrowserRouter([
           {
             path: "shipment",
             element: <Shipments />,
+          },
+          {
+            path: "customers",
+            element: <DistributorCustomer />,
           },
         ],
       },

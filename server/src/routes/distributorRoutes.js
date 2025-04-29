@@ -6,7 +6,6 @@ const distributorRouter = express.Router();
 
 distributorRouter.get("/", DistributorController.fetchAllDistributors);
 
-
 distributorRouter.get(
   "/distributor-profile",
   isAuthenticated,
@@ -20,8 +19,6 @@ distributorRouter.get(
   authorizeRoles("distributor"),
   DistributorController.getDashboardData
 );
-
-
 
 distributorRouter.get("/:id", DistributorController.fetchSingleDistributor);
 

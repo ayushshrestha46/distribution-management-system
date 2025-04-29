@@ -90,7 +90,7 @@ const Register = () => {
             {/* Full Name */}
             <div>
               <Label className="block text-sm font-medium text-gray-700 mb-1">
-                Shop Name
+                Full Name
               </Label>
               <div className="relative">
                 <User

@@ -35,6 +35,7 @@ import TermsOfService from "./Resources/TermsOfService";
 import Support from "./Resources/Support";
 import PrivacyPolicy1 from "./Resources/PrivacyPolicy1";
 import ScrollToTop from "./ScrollToTop";
+import DistributorCustomer from "./Distributor/DistributorCustomer";
 export {
   Login,
   Register,
@@ -72,5 +73,6 @@ export {
   TermsOfService,
   Support,
   ScrollToTop,
+  DistributorCustomer,
   Footer,
 };

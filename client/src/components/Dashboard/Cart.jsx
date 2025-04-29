@@ -215,11 +215,11 @@ const CartItem = ({
         <div className="flex justify-between text-base font-medium text-gray-900">
           <h3>{item.name}</h3>
           <p className="ml-4">
-            ${(item.price * (item.quantity || 1)).toFixed(2)}
+            Rs.{(item.price * (item.quantity || 1)).toFixed(2)}
           </p>
         </div>
         <p className="mt-1 text-sm text-gray-500">
-          ${item.price.toFixed(2)} each
+          Rs.{item.price.toFixed(2)} each
         </p>
         <p
           className={`mt-1 text-sm ${

@@ -376,7 +376,7 @@ class OrderController {
   // ********************* Payment Method onlin ************************************
   static initiatePayment = asyncHandler(async (req, res, next) => {
     const { amount, purchaseOrderId, purchaseOrderName } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
     const user = await User.findById(req.user._id);
 
     const payload = {
@@ -403,7 +403,6 @@ class OrderController {
           },
         }
       );
-      console.log(response.data);
       res.json({
         success: true,
         payment_url: response.data.payment_url,
@@ -440,13 +439,15 @@ class OrderController {
     );
     const paymentInfo = verificationResponse.data;
     paymentInfo.total_amount = paymentInfo.total_amount / 100;
-
+    console.log("Payment Info", paymentInfo);
     if (paymentInfo.status === "Completed") {
       const order = await Order.findById(orderId);
+      console.log(order);
       order.paymentMethod = "Khalti";
       order.isPaid = true;
       order.paidAt = new Date();
       // Send mail to the user id
+      await order.save();
 
       res.json({
         success: true,

@@ -108,7 +108,7 @@ class AuthController {
         password,
         address,
         phone,
-        isVerified:true
+        isVerified:true,
       });
 
       res.status(201).json({

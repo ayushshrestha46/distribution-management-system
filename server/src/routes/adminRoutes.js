@@ -40,7 +40,7 @@ adminRouter.get(
 adminRouter.get(
   "/all-customers",
   isAuthenticated,
-  authorizeRoles("admin"),
+  authorizeRoles("admin", "distributor"),
   AdminController.fetchAllCustomers
 );
 

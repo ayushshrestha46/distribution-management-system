@@ -22,7 +22,7 @@ const DashboardSidebar = () => {
     },
 
     { icon: TruckIcon, text: "Shipments", path: "/distributor/shipment" },
-    // { icon: Users, text: "Customers", },
+    { icon: Users, text: "Customers", path: "/distributor/customers"},
   ];
 
   return (
