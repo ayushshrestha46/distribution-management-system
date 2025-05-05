@@ -79,6 +79,16 @@ class OrderController {
         };
       });
 
+      // Update product quantities and move to hold
+      for (const item of orderItems) {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: {
+            quantity: -item.qty, // Decrease available quantity
+            holdQuantity: item.qty, // Increase hold quantity
+          },
+        });
+      }
+
       const user = await User.findById(req.user._id);
       const order = new Order({
         orderItems: dbOrderItems,
@@ -174,7 +184,11 @@ class OrderController {
       // Update the stock for each product
       for (const item of order.orderItems) {
         const product = await Product.findById(item.product);
-        product.quantity -= item.qty;
+        if (product.holdQuantity >= item.qty) {
+          product.holdQuantity -= item.qty;
+        } else {
+          product.quantity -= item.qty;
+        }
         await product.save();
       }
 

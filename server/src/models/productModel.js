@@ -9,7 +9,7 @@ const ProductSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    trim:true
+    trim: true,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -20,8 +20,12 @@ const ProductSchema = new mongoose.Schema({
     default: true,
   },
   quantity: {
-    type:Number,
-    default:0
+    type: Number,
+    default: 0,
+  },
+  holdQuantity: {
+    type: Number,
+    default: 0,
   },
   description: {
     type: String,

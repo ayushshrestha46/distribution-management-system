@@ -378,12 +378,12 @@ function ProductList() {
                               />
                               <Badge
                                 className={`absolute top-2 right-2 ${
-                                  product.quantity > 0
+                                  (product.quantity + product.holdQuantity) > 0
                                     ? "bg-green-100 text-green-800 hover:bg-green-100"
                                     : "bg-red-100 text-red-800 hover:bg-red-100"
                                 }`}
                               >
-                                {product.quantity > 0
+                                {(product.quantity + product.holdQuantity) > 0
                                   ? "In Stock"
                                   : "Out of Stock"}
                               </Badge>
@@ -409,7 +409,7 @@ function ProductList() {
                                 <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-md">
                                   <Package2 className="h-4 w-4 text-gray-500" />
                                   <span className="text-sm">
-                                    {product.quantity} units
+                                    {product.quantity + product.holdQuantity} units
                                   </span>
                                 </div>
                                 <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-md">
@@ -474,12 +474,12 @@ function ProductList() {
                                   />
                                   <Badge
                                     className={`absolute top-2 right-2 ${
-                                      product.quantity > 0
+                                      (product.quantity + product.holdQuantity) > 0
                                         ? "bg-green-100 text-green-800 hover:bg-green-100"
                                         : "bg-red-100 text-red-800 hover:bg-red-100"
                                     }`}
                                   >
-                                    {product.quantity > 0
+                                    {(product.quantity + product.holdQuantity) > 0
                                       ? "In Stock"
                                       : "Out of Stock"}
                                   </Badge>
@@ -546,7 +546,7 @@ function ProductList() {
                                         Stock
                                       </div>
                                       <div className="font-medium text-orange-800">
-                                        {product.quantity} units
+                                        {product.quantity + product.holdQuantity} units
                                       </div>
                                     </div>
                                   </div>

@@ -362,7 +362,7 @@ const CartSummary = ({
   <div className="border-t border-gray-200 px-6 py-4 bg-gray-50">
     <div className="flex justify-between text-base font-medium text-gray-900 mb-4">
       <p>Subtotal</p>
-      <p>${totalPrice.toFixed(2)}</p>
+      <p>Rs.{totalPrice.toFixed(2)}</p>
     </div>
     <div className="flex justify-between">
       <button

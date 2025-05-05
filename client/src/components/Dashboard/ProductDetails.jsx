@@ -235,10 +235,10 @@ const ProductDetails = () => {
                 <Button
                   className="flex-1  py-3 text-lg"
                   onClick={handleAddToCart}
-                  disabled={product.countInStock <= 0}
+                  disabled={product.quantity <= 0}
                 >
                   <ShoppingCart className="mr-2 h-5 w-5" />
-                  Add to Cart
+                  {product.quantity >0 ? "Add to Cart": "Out of Stock"}
                 </Button>
                 {/* <Button
                   className="flex-1 bg-gray-800 hover:bg-gray-900 text-white py-3 text-lg"

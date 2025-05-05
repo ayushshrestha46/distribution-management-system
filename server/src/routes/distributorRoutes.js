@@ -12,6 +12,12 @@ distributorRouter.get(
   authorizeRoles("distributor"),
   DistributorController.getDistributorProfile
 );
+distributorRouter.get(
+  "/retailers",
+  isAuthenticated,
+  authorizeRoles("distributor"),
+  DistributorController.getDistributorCustomers
+);
 
 distributorRouter.get(
   "/dashboard-data",

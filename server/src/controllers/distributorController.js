@@ -374,5 +374,42 @@ class DistributorController {
       return next(new ErrorHandler(error.message, 500));
     }
   });
+
+  static getDistributorCustomers = asyncHandler(async (req, res, next) => {
+    try {
+      // Get the logged-in distributor's user ID from the request (set by auth middleware)
+      const distributorUserId = req.user._id;
+
+      // Verify the logged-in user is actually a distributor
+      if (req.user.role !== "distributor") {
+        return next(
+          new ErrorHandler("Only distributors can access this resource", 403)
+        );
+      }
+
+      // Find the distributor document associated with this user
+      const distributor = await Distributor.findOne({
+        user: distributorUserId,
+      });
+
+      if (!distributor) {
+        return next(new ErrorHandler("Distributor profile not found", 404));
+      }
+
+      // Find all retailers assigned to this distributor
+      const customers = await User.find({
+        distributor: distributor._id,
+        role: "shop", // Only get shop users (retailers)
+      }).select("-password"); // Exclude password field from results
+
+      res.status(200).json({
+        success: true,
+        message: "Retailers fetched",
+        users:customers,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  });
 }
 export default DistributorController;

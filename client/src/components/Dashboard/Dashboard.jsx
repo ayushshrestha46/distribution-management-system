@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/app/slices/cartSlice";
 import { useGetDistributorProductsQuery } from "@/app/slices/productApiSlice";
 import { ScrollArea } from "../ui/scroll-area";
@@ -240,43 +240,84 @@ const Dashboard = () => {
 // Extracted ProductCard component for better organization
 const ProductCard = ({ product, handleAddToCart }) => {
   const nav = useNavigate();
+
+  // Safety check to ensure product exists
+  if (!product) {
+    return (
+      <div className="bg-gray-100 rounded-lg shadow-md p-4 h-64 flex items-center justify-center">
+        <p className="text-gray-500">Product data unavailable</p>
+      </div>
+    );
+  }
+
+  // Determine if the product is in stock
+  const isInStock = product.quantity > 0;
+
+  // Get cart items from Redux store
+  const cartItems = useSelector((state) => state.cart.items) || [];
+  const cartItem = cartItems?.find(
+    (item) => item?.product?._id === product?._id
+  );
+  const cartQuantity = cartItem ? cartItem.quantity : 0;
+
+  // Check if adding more to cart is possible
+  const canAddToCart = isInStock && cartQuantity < product.quantity;
+
   return (
     <div className="bg-white rounded-lg cursor-pointer shadow-md overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1">
-      <div className="relative" onClick={() => nav(`./product/${product?._id}`)}>
+      <div
+        className="relative"
+        onClick={() => nav(`./product/${product?._id}`)}
+      >
         <img
-          src={product.images[0]?.url || "/api/placeholder/400/320"}
-          alt={product.name}
+          src={product?.images?.[0]?.url || "/api/placeholder/400/320"}
+          alt={product?.name || "Product"}
           className="w-full h-48 object-cover"
         />
         <div className="absolute bottom-0 left-0 bg-blue-600 text-white px-3 py-1 rounded-tr-lg text-sm font-medium">
-          {product.category}
+          {product?.category || "Uncategorized"}
+        </div>
+
+        {/* Stock status tag in the top right corner */}
+        <div
+          className={`absolute top-0 right-0 px-3 py-1 rounded-bl-lg text-sm font-medium ${
+            isInStock ? "bg-green-500 text-white" : "bg-red-500 text-white"
+          }`}
+        >
+          {isInStock ? "In Stock" : "Out of Stock"}
         </div>
       </div>
 
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">
-          {product.name}
+          {product?.name || "Unnamed Product"}
         </h3>
 
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-          {product.description}
+          {product?.description || "No description available"}
         </p>
 
         <div className="flex justify-between items-center">
           <span className="text-xl font-bold text-blue-600">
-            Rs. {product.price.toFixed(2)}
+            Rs.{(product?.price || 0).toFixed(2)}
           </span>
           <Button
             className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2"
             onClick={() => handleAddToCart(product)}
+            disabled={!canAddToCart}
           >
             <ShoppingCart className="h-4 w-4" />
-            <span>Add to Cart</span>
+            <span>
+              {!isInStock
+                ? "Out of Stock"
+                : cartQuantity >= product.quantity
+                ? "Max Reached"
+                : "Add to Cart"}
+            </span>
           </Button>
         </div>
       </div>
     </div>
   );
 };
-
 export default Dashboard;

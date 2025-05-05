@@ -117,7 +117,7 @@ const AdminProduct = () => {
                     {product.owner?.warehouseDetails?.address}
                   </TableCell>
                   <TableCell>
-                    {product.owner?.warehouseDetails?.address}
+                    {product.owner?.user?.name}
                   </TableCell>
                 </TableRow>
               ))
