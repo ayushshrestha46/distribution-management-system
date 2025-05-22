@@ -11,6 +11,14 @@ export const productApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+    addDiscount: builder.mutation({
+      query: (data) => ({
+        url: `${product_url}/add-discount/${data.id}`,
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+    }),
 
     editProduct: builder.mutation({
       query: (data) => ({
@@ -63,4 +71,5 @@ export const {
   useGetProductsQuery,
   useGetDistributorProductsQuery,
   useUpdateStockQuantityMutation,
+  useAddDiscountMutation,
 } = productApiSlice;

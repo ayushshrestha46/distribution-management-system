@@ -11,6 +11,7 @@ import cloudinary from "cloudinary";
 import crypto from "crypto";
 import Product from "../models/productModel.js";
 import Order from "../models/orderModel.js";
+import Payment from "../models/paymentModel.js";
 
 class DistributorController {
   static addDistributor = asyncHandler(async (req, res, next) => {
@@ -405,11 +406,41 @@ class DistributorController {
       res.status(200).json({
         success: true,
         message: "Retailers fetched",
-        users:customers,
+        users: customers,
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
   });
+
+  static viewPayments = asyncHandler(async (req, res, next) => {
+    try {
+      const userId = req.user._id;
+
+      // Find the distributor associated with the logged-in user
+      const distributor = await Distributor.findOne({ user: userId });
+      
+
+      if (!distributor) {
+        return next(new ErrorHandler("Distributor not found", 404));
+      }
+      console.log(distributor._id);
+      // Find all payments for this distributor and populate user and order details
+      const payments = await Payment.find({ distributor: distributor._id })
+        .populate({
+          path: "user",
+          select: "name email",
+        })
+        .sort({ createdAt: -1 }); // Sort by latest payment first
+      
+      res.status(200).json({
+        success: true,
+        payments,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  });
+
 }
 export default DistributorController;

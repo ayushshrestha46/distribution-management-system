@@ -31,17 +31,18 @@ adminRouter.get(
   authorizeRoles("admin"),
   AdminController.fetchAllProducts
 );
-adminRouter.get(
-  "/admin-dashboard",
-  isAuthenticated,
-  authorizeRoles("admin"),
-  AdminController.adminDashboard
-);
+
 adminRouter.get(
   "/all-customers",
   isAuthenticated,
   authorizeRoles("admin", "distributor"),
   AdminController.fetchAllCustomers
+);
+adminRouter.get(
+  "/all-payments",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  AdminController.viewAllPaymentsByAdmin
 );
 
 adminRouter.post(

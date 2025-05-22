@@ -58,6 +58,13 @@ export const supplierApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+    getSupplierViewPayment: builder.query({
+      query: () => ({
+        url: `${supplier_url}/view-payments`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -69,4 +76,5 @@ export const {
   useGetDistributorProfileQuery,
   useGetSupplierRetailersQuery,
   useGetSupplierDashboardDataQuery,
+  useGetSupplierViewPaymentQuery,
 } = supplierApiSlice;

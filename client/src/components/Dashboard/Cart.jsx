@@ -14,20 +14,29 @@ import { toast } from "react-toastify";
 const Cart = () => {
   const nav = useNavigate();
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.items);
+  const cartItems = useSelector((state) => state.cart?.items);
 
   const { data: productsData, refetch: refetchProducts } =
     useGetDistributorProductsQuery();
   const products = productsData?.products || [];
 
   const totalPrice = cartItems.reduce(
-    (total, item) => total + item.price * (item.quantity || 1),
+    (total, item) => total + item.discountedPrice * (item.quantity || 1),
     0
   );
 
   const getProductStock = (_id) => {
     const product = products.find((p) => p._id === _id);
     return product ? product.quantity : 0;
+  };
+
+  const getAvailableQuantity = (_id) => {
+    const product = products.find((p) => p._id === _id);
+    const cartItem = cartItems.find((item) => item._id === _id);
+    if (product) {
+      return product.quantity - (cartItem?.quantity || 0);
+    }
+    return 0;
   };
 
   const handleRemoveItem = (_id) => {
@@ -121,6 +130,7 @@ const Cart = () => {
             <CartItemList
               cartItems={cartItems}
               getProductStock={getProductStock}
+              getAvailableQuantity={getAvailableQuantity}
               handleQuantityChange={handleQuantityChange}
               handleInputChange={handleInputChange}
               handleInputBlur={handleInputBlur}
@@ -164,6 +174,7 @@ const EmptyCart = () => (
 const CartItemList = ({
   cartItems,
   getProductStock,
+  getAvailableQuantity,
   handleQuantityChange,
   handleInputChange,
   handleInputBlur,
@@ -173,6 +184,7 @@ const CartItemList = ({
     <ul className="-my-6 divide-y divide-gray-200">
       {cartItems.map((item) => {
         const productStock = getProductStock(item._id);
+        const availableQuantity = getAvailableQuantity(item._id);
         const isOutOfStock = productStock <= 0;
 
         return (
@@ -180,6 +192,7 @@ const CartItemList = ({
             key={item._id}
             item={item}
             productStock={productStock}
+            availableQuantity={availableQuantity}
             isOutOfStock={isOutOfStock}
             handleQuantityChange={handleQuantityChange}
             handleInputChange={handleInputChange}
@@ -195,6 +208,7 @@ const CartItemList = ({
 const CartItem = ({
   item,
   productStock,
+  availableQuantity,
   isOutOfStock,
   handleQuantityChange,
   handleInputChange,
@@ -215,18 +229,31 @@ const CartItem = ({
         <div className="flex justify-between text-base font-medium text-gray-900">
           <h3>{item.name}</h3>
           <p className="ml-4">
-            Rs.{(item.price * (item.quantity || 1)).toFixed(2)}
+            Rs.{(item.discountedPrice * (item.quantity || 1)).toFixed(2)}
           </p>
         </div>
-        <p className="mt-1 text-sm text-gray-500">
-          Rs.{item.price.toFixed(2)} each
+        <p className="mt-1 text-sm text-gray-800">
+          Rs.{item.discountedPrice?.toFixed(2)} each
         </p>
+        {item.discountPercent?.toFixed(2) > 0 && (
+          <span className="flex gap-3 items-center">
+            <p className=" text-sm text-gray-400 line-through ">
+              Rs.{item.price.toFixed(2)}
+            </p>
+            <span className="font-normal text-sm">
+              -{item.discountPercent?.toFixed(2) || "0.00"}%
+            </span>
+          </span>
+        )}
+
         <p
           className={`mt-1 text-sm ${
             isOutOfStock ? "text-red-500" : "text-gray-500"
           }`}
         >
-          {isOutOfStock ? "Out of stock" : `${productStock} available in stock`}
+          {isOutOfStock
+            ? "Out of stock"
+            : `${productStock} available in stock (${availableQuantity} remaining after cart)`}
         </p>
       </div>
 

@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [categories, setCategories] = useState(["All"]);
+  const cartItems = useSelector((state) => state.cart?.items || []);
 
   const { data, isLoading } = useGetDistributorProductsQuery();
   const products = Array.isArray(data?.products) ? data.products : [];
@@ -49,9 +50,26 @@ const Dashboard = () => {
     return matchesSearch && matchesCategory;
   });
 
+  const getProductAvailableQuantity = (productId) => {
+    const product = products.find((p) => p._id === productId);
+    if (!product) return 0;
+
+    const cartItem = cartItems.find((item) => item._id === productId);
+    const cartQuantity = cartItem ? cartItem.quantity || 0 : 0;
+
+    return Math.max(0, product.quantity - cartQuantity);
+  };
+
   const handleAddToCart = (product) => {
-    dispatch(addToCart(product));
-    toast.success(`${product.name} added to cart!`);
+    // Check if product is already in cart and if there's available quantity
+    const availableQuantity = getProductAvailableQuantity(product._id);
+
+    if (availableQuantity > 0) {
+      dispatch(addToCart(product));
+      toast.success(`${product.name} added to cart!`);
+    } else {
+      toast.error(`No more ${product.name} available in stock!`);
+    }
   };
 
   const handleRequestSupplier = async () => {
@@ -206,9 +224,11 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredProducts.slice(0, 4).map((product) => (
               <ProductCard
-                key={product.id}
+                key={product._id}
                 product={product}
                 handleAddToCart={handleAddToCart}
+                cartItems={cartItems}
+                getProductAvailableQuantity={getProductAvailableQuantity}
               />
             ))}
           </div>
@@ -225,9 +245,11 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredProducts.map((product) => (
               <ProductCard
-                key={product.id}
+                key={product._id}
                 product={product}
                 handleAddToCart={handleAddToCart}
+                cartItems={cartItems}
+                getProductAvailableQuantity={getProductAvailableQuantity}
               />
             ))}
           </div>
@@ -238,7 +260,12 @@ const Dashboard = () => {
 };
 
 // Extracted ProductCard component for better organization
-const ProductCard = ({ product, handleAddToCart }) => {
+const ProductCard = ({
+  product,
+  handleAddToCart,
+  cartItems,
+  getProductAvailableQuantity,
+}) => {
   const nav = useNavigate();
 
   // Safety check to ensure product exists
@@ -250,74 +277,104 @@ const ProductCard = ({ product, handleAddToCart }) => {
     );
   }
 
-  // Determine if the product is in stock
+  // Find cart item for this product
+  const cartItem = cartItems.find((item) => item._id === product._id);
+  const cartQuantity = cartItem ? cartItem.quantity || 0 : 0;
+
+  // Calculate available quantity
+  const availableQuantity = getProductAvailableQuantity(product._id);
   const isInStock = product.quantity > 0;
+  const canAddToCart = isInStock && availableQuantity > 0;
 
-  // Get cart items from Redux store
-  const cartItems = useSelector((state) => state.cart.items) || [];
-  const cartItem = cartItems?.find(
-    (item) => item?.product?._id === product?._id
-  );
-  const cartQuantity = cartItem ? cartItem.quantity : 0;
-
-  // Check if adding more to cart is possible
-  const canAddToCart = isInStock && cartQuantity < product.quantity;
+  // Determine button text and state
+  const getButtonText = () => {
+    if (!isInStock) return "Out of Stock";
+    if (availableQuantity <= 0) return "Max Reached";
+    return "Add to Cart";
+  };
 
   return (
     <div className="bg-white rounded-lg cursor-pointer shadow-md overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1">
-      <div
-        className="relative"
-        onClick={() => nav(`./product/${product?._id}`)}
-      >
+      <div className="relative" onClick={() => nav(`./product/${product._id}`)}>
         <img
-          src={product?.images?.[0]?.url || "/api/placeholder/400/320"}
-          alt={product?.name || "Product"}
+          src={product.images?.[0]?.url || "/api/placeholder/400/320"}
+          alt={product.name || "Product"}
           className="w-full h-48 object-cover"
         />
         <div className="absolute bottom-0 left-0 bg-blue-600 text-white px-3 py-1 rounded-tr-lg text-sm font-medium">
-          {product?.category || "Uncategorized"}
+          {product.category || "Uncategorized"}
         </div>
 
-        {/* Stock status tag in the top right corner */}
+        {/* Stock status tag with improved information */}
         <div
           className={`absolute top-0 right-0 px-3 py-1 rounded-bl-lg text-sm font-medium ${
-            isInStock ? "bg-green-500 text-white" : "bg-red-500 text-white"
-          }`}
+            isInStock
+              ? availableQuantity > 0
+                ? "bg-green-500"
+                : "bg-yellow-500"
+              : "bg-red-500"
+          } text-white`}
         >
-          {isInStock ? "In Stock" : "Out of Stock"}
+          {!isInStock
+            ? "Out of Stock"
+            : availableQuantity <= 0
+            ? "In Cart"
+            : `Available: ${availableQuantity}`}
         </div>
       </div>
 
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">
-          {product?.name || "Unnamed Product"}
+          {product.name || "Unnamed Product"}
         </h3>
 
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-          {product?.description || "No description available"}
+          {product.description || "No description available"}
         </p>
 
         <div className="flex justify-between items-center">
-          <span className="text-xl font-bold text-blue-600">
-            Rs.{(product?.price || 0).toFixed(2)}
+          <span className="text-xl font-bold text-blue-600 flex flex-col ">
+            <span>Rs.{product.discountedPrice?.toFixed(2) || "0.00"}</span>
+            {product.discountPercent?.toFixed(2) > 0 && (
+              <span className="gap-2 flex mr-3  items-center font-medium">
+                <span className="line-through text-gray-400 text-base ">
+                  Rs.{product.price?.toFixed(2) || "0.00"}
+                </span>
+                <span className="text-base text-black ">
+                  -{product.discountPercent?.toFixed(2) || "0.00"}%
+                </span>
+              </span>
+            )}
           </span>
           <Button
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2"
-            onClick={() => handleAddToCart(product)}
+            className={`${
+              canAddToCart
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-gray-400 cursor-not-allowed"
+            } text-white rounded-lg flex items-center p-2 gap-2`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (canAddToCart) handleAddToCart(product);
+            }}
             disabled={!canAddToCart}
           >
             <ShoppingCart className="h-4 w-4" />
-            <span>
-              {!isInStock
-                ? "Out of Stock"
-                : cartQuantity >= product.quantity
-                ? "Max Reached"
-                : "Add to Cart"}
-            </span>
+            <span>{getButtonText()}</span>
           </Button>
         </div>
+
+        {/* Improved cart quantity display */}
+        {cartQuantity > 0 && (
+          <div className="mt-2 text-sm font-medium flex justify-between">
+            <span className="text-gray-600">In cart: {cartQuantity}</span>
+            <span className="text-gray-600">
+              Total stock: {product.quantity}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
 export default Dashboard;

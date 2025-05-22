@@ -54,7 +54,7 @@ const Checkout = () => {
   }, [user, reset]);
 
   const totalPrice = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) => total + item.discountedPrice * item.quantity,
     0
   );
   const tax = totalPrice * 0.13;
@@ -70,6 +70,7 @@ const Checkout = () => {
         qty: item.quantity,
         image: item.images[0]?.url || "",
         price: item.price,
+        discountedPrice: item.discountedPrice,
         product: item._id, // This should be the MongoDB ObjectId of the product
       }));
 
@@ -192,7 +193,7 @@ const Checkout = () => {
                         </p>
                       </div>
                       <p className="text-sm font-semibold text-gray-900">
-                        Rs.{(item.price * item.quantity).toFixed(2)}
+                        Rs.{(item.discountedPrice * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   ))}

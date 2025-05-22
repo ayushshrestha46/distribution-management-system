@@ -26,6 +26,7 @@ distributorRouter.get(
   DistributorController.getDashboardData
 );
 
+distributorRouter.get('/view-payments', isAuthenticated, authorizeRoles('distributor'), DistributorController.viewPayments); // This is added 
 distributorRouter.get("/:id", DistributorController.fetchSingleDistributor);
 
 distributorRouter.post(

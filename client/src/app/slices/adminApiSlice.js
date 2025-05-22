@@ -19,6 +19,15 @@ export const supplierApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+
+    getAllPayment: builder.query({
+      query: () => ({
+        url: `${admin_url}/all-payments`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+
     getDistributorProfile: builder.query({
       query: () => ({
         url: `${admin_url}/distributor-profile`,
@@ -85,4 +94,5 @@ export const {
   useAllCustomersQuery,
   useBanMutation,
   useAddCustomersMutation,
+  useGetAllPaymentQuery
 } = supplierApiSlice;

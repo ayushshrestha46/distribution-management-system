@@ -6,6 +6,7 @@ import {
   BarChart3,
   TruckIcon,
   Package,
+  CreditCard,
 } from "lucide-react";
 import { LogoutButton } from "..";
 
@@ -23,6 +24,7 @@ const DashboardSidebar = () => {
 
     { icon: TruckIcon, text: "Shipments", path: "/distributor/shipment" },
     { icon: Users, text: "Customers", path: "/distributor/customers"},
+    { icon: CreditCard, text: "Payments", path: "/distributor/payments"},
   ];
 
   return (

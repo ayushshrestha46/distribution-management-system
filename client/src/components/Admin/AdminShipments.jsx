@@ -96,7 +96,7 @@ const AdminShipments = () => {
       </CardHeader>
 
       <CardContent>
-        <ScrollArea className="h-screen">
+        <ScrollArea className="h-[calc(100vh-190px)]">
         <div className="mb-6 flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />

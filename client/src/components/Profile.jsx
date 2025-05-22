@@ -4,12 +4,11 @@ import {
   Mail,
   Phone,
   MapPin,
-  BookOpen,
-  Users,
   Edit2,
   X,
   Check,
   Camera,
+  ArrowLeft,
 } from "lucide-react";
 import {
   useGetUserProfileQuery,
@@ -17,6 +16,8 @@ import {
 } from "@/app/slices/userApiSlice";
 import { toast } from "react-toastify";
 import { Button } from "./ui/button";
+import { useNavigate } from "react-router-dom";
+
 
 function Profile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -24,6 +25,7 @@ function Profile() {
   const [updateProfile, { isLoading: updateLoading }] =
     useUpdateUserProfileMutation();
   const user = data?.user;
+  const navigate = useNavigate()
 
   const [profile, setProfile] = useState({
     name: "John Doe",
@@ -101,6 +103,7 @@ function Profile() {
     reset(profile);
     setIsEditing(false);
   };
+  const nav = useNavigate();
 
   const StatCard = ({ icon: Icon, label, value, className = "" }) => (
     <div
@@ -168,8 +171,18 @@ function Profile() {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-10 pb-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <div>
+        <button className="flex items-center gap-1 text-blue-700 p-2 rounded-md" onClick={(e) =>navigate(-1)}> <ArrowLeft/> Back</button>
+        </div>
         {/* Profile Header */}
+        {/* <button
+          className="flex gap-2 items-center "
+          onClick={() => nav(-1)}
+        >
+          <ArrowLeft />
+          Back
+        </button> */}
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
           <div className="h-32 bg-gradient-to-r from-[#1E3A8A] to-[#3b1861]"></div>
           <div className="relative px-6 pb-6">
@@ -239,8 +252,7 @@ function Profile() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 justify-center">
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 justify-center"></div>
 
         {/* Profile Information */}
         <div className="grid gap-8 grid-cols-1 lg:grid-cols-2">

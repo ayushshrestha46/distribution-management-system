@@ -11,6 +11,7 @@ import { sendToken } from "../utils/jwt.js";
 import Distributor from "../models/distributorModel.js";
 import Product from "../models/productModel.js";
 import Order from "../models/orderModel.js";
+import Payment from "../models/paymentModel.js";
 
 class AdminController {
   static allocateDistributor = asyncHandler(async (req, res, next) => {
@@ -36,6 +37,7 @@ class AdminController {
       return next(new ErrorHandler(error.message, 500));
     }
   });
+
   static fetchDistributorAllocationRequest = asyncHandler(
     async (req, res, next) => {
       try {
@@ -56,12 +58,20 @@ class AdminController {
       }
     }
   );
+
   static fetchAllOrders = asyncHandler(async (req, res, next) => {
     try {
       // Fetch all orders and populate both 'user' and 'distributor'
       const orders = await Order.find()
-        .populate("user", "name email") // Populate user details (only name and email)
-        .populate("distributor", "name email"); // Populate distributor details (only name and email)
+        .populate("user", "name email")
+        .populate({
+          path: "distributor",
+          select: "user", // Only select the user reference from distributor
+          populate: {
+            path: "user", // Then populate the actual user details
+            select: "name email",
+          },
+        }); // Populate distributor details (only name and email)
 
       // Send the orders as a response
       res.status(200).json({
@@ -72,6 +82,7 @@ class AdminController {
       return next(new ErrorHandler(error.message, 500));
     }
   });
+
   static fetchAllProducts = asyncHandler(async (req, res, next) => {
     try {
       const products = await Product.find().populate({
@@ -217,13 +228,54 @@ class AdminController {
       return next(new ErrorHandler(error.message, 500));
     }
   });
-  static adminDashboard = asyncHandler(async(req,res,next) =>{
+
+  static viewAllPaymentsByAdmin = asyncHandler(async (req, res, next) => {
     try {
-      
+      const payments = await Payment.find()
+        .populate({
+          path: "user",
+          select: "name email",
+        })
+        .populate({
+          path: "distributor",
+          select: "user", // Only select the user reference from distributor
+          populate: {
+            path: "user", // Then populate the actual user details
+            select: "name email",
+          },
+        })
+        .sort({ createdAt: -1 });
+
+      // Format the response to flatten the structure
+      const formattedPayments = payments.map((payment) => ({
+        _id: payment._id,
+        amount: payment.amount,
+        status: payment.status,
+        paymentMethod: payment.paymentMethod,
+        pidx: payment.pidx,
+        createdAt: payment.createdAt,
+        user: {
+          _id: payment.user._id,
+          name: payment.user.name,
+          email: payment.user.email,
+        },
+        distributor: {
+          _id: payment.distributor._id,
+          name: payment.distributor.user.name,
+          email: payment.distributor.user.email,
+        },
+        order: payment.order,
+      }));
+
+      res.status(200).json({
+        success: true,
+        count: payments.length,
+        payments: formattedPayments,
+      });
     } catch (error) {
-      return next(new ErrorHandler(error.message, 500))
+      return next(new ErrorHandler(error.message, 500));
     }
-  })
+  });
 }
 
 export default AdminController;

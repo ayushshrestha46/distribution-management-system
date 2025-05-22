@@ -31,6 +31,19 @@ productRouter.put(
   ProductController.updateProductDetails
 );
 
+productRouter.post(
+  "/add-discount/:id",
+  isAuthenticated,
+  authorizeRoles("distributor"),
+  ProductController.addDiscount
+);
+productRouter.put(
+  "/remove-discount/:id",
+  isAuthenticated,
+  authorizeRoles("distributor"),
+  ProductController.removeDiscount
+);
+
 productRouter.patch(
   "/updateStock/:id",
   isAuthenticated,

@@ -106,7 +106,6 @@ function InvoiceContent({ orderId }) {
                 <td className="py-3 px-4">{item.name}</td>
                 <td className="py-3 px-4 text-right">{item.quantity}</td>
                 <td className="py-3 px-4 text-right">Rs. {item.price}</td>
-
                 <td className="py-3 px-4 text-right font-medium">
                   Rs. {item.total}
                 </td>
@@ -158,14 +157,14 @@ function InvoiceContent({ orderId }) {
                   <span className="text-gray-600">Vat Amount:</span>
 
                   <span className="font-medium">
-                    Rs. {billData?.orderSummary?.vatAmount}
+                    Rs. {billData?.orderSummary?.vatAmount?.toFixed(2)}
                   </span>
                 </div>
                 <div className="border-t border-gray-200 pt-3 mt-2">
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total Amount:</span>
                     <span className="text-blue-600">
-                      Rs.{billData?.orderSummary?.total}
+                      Rs.{billData?.orderSummary?.total?.toFixed(2)}
                     </span>
                   </div>
                 </div>

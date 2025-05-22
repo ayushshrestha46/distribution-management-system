@@ -5,7 +5,6 @@ import {
   Users,
   Building2,
   CircleDollarSign,
-  LineChart,
   ChevronRight,
   Package,
   ChevronDown,
@@ -33,14 +32,17 @@ const Sidebar = () => {
         { icon: User2, text: "Supplier Request", path: "/admin/request" },
       ],
     },
-    { icon: CircleDollarSign, text: "Finance", path: "/finance" },
-    { icon: LineChart, text: "Analytics", path: "/analytics" },
+    {
+      icon: CircleDollarSign,
+      text: "Payments",
+      path: "/admin/all-payments",
+    },
   ];
 
   return (
     <div className="w-80 h-screen border-r border-gray-200 bg-white flex flex-col justify-between">
       <div>
-        <div className="flex items-center gap-3 p-6 border-b border-gray-100">
+        <div className="flex items-center gap-3 p-[15.5px] border-b">
           <Link to="/admin" className="flex-shrink-0 flex items-center">
             <Package className="h-8 w-8 text-blue-600 mr-3" />
             <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
@@ -106,7 +108,7 @@ const Sidebar = () => {
                       </button>
                     ))}
                   </div>
-                )} 
+                )}
               </div>
             ))}
           </nav>
@@ -115,10 +117,7 @@ const Sidebar = () => {
 
       {/* Logout Button */}
       <div className="p-4 border-t border-gray-100">
-        <LogoutButton
-          className="bg-no w-full justify-start text-red-600 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50"
-          // isSidebarCollapsed={isSidebarCollapsed} // Pass this prop
-        />
+        <LogoutButton className="bg-no w-full justify-start text-red-600 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50" />
       </div>
     </div>
   );

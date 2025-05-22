@@ -9,6 +9,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import sendMail from "../utils/sendMail.js";
 import axios from "axios";
+import Payment from "../models/paymentModel.js";
 class OrderController {
   static createOrder = asyncHandler(async (req, res, next) => {
     try {
@@ -74,7 +75,7 @@ class OrderController {
         return {
           ...itemFromClient,
           product: itemFromClient.product,
-          price: matchingItemFromDB.price,
+          price: matchingItemFromDB.discountedPrice,
           _id: undefined,
         };
       });
@@ -249,6 +250,17 @@ class OrderController {
       if (!order) {
         return next(new ErrorHandler("Order not found", 400));
       }
+      for (const item of order.orderItems) {
+        const product = await Product.findById(item.product);
+        if (product.holdQuantity >= item.qty) {
+          product.holdQuantity -= item.qty;
+          product.quantity += item.qty;
+        } else {
+          product.quantity += item.qty;
+        }
+        await product.save();
+      }
+
       order.status = "rejected";
       await order.save();
       // TODO: SEND MAIL TO the user regarding the order being rejected
@@ -390,13 +402,21 @@ class OrderController {
   // ********************* Payment Method onlin ************************************
   static initiatePayment = asyncHandler(async (req, res, next) => {
     const { amount, purchaseOrderId, purchaseOrderName } = req.body;
-    // console.log(req.body);
+    // Convert amount to integer paisa/cents (ensuring it's a whole number)
+  const amountInPaisa = Math.round(parseFloat(amount) * 100);
+  
+  if (isNaN(amountInPaisa) || amountInPaisa <= 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid amount provided"
+    });
+  }
     const user = await User.findById(req.user._id);
 
     const payload = {
       return_url: "http://localhost:3000/dashboard/orders",
       website_url: "http://localhost:3000",
-      amount: amount * 100,
+      amount: amountInPaisa * 100,
       purchase_order_id: purchaseOrderId,
       purchase_order_name: purchaseOrderName,
       customer_info: {
@@ -434,7 +454,6 @@ class OrderController {
   static completePayment = asyncHandler(async (req, res, next) => {
     const { pidx } = req.query;
     const { orderId } = req.body;
-    console.log(orderId, pidx);
     const user = await User.findById(req.user._id);
     if (!pidx) {
       return res
@@ -453,7 +472,7 @@ class OrderController {
     );
     const paymentInfo = verificationResponse.data;
     paymentInfo.total_amount = paymentInfo.total_amount / 100;
-    console.log("Payment Info", paymentInfo);
+
     if (paymentInfo.status === "Completed") {
       const order = await Order.findById(orderId);
       console.log(order);
@@ -461,7 +480,61 @@ class OrderController {
       order.isPaid = true;
       order.paidAt = new Date();
       // Send mail to the user id
+      // Prepare mail data
+      const mailData = {
+        user: {
+          name: user.name,
+          email: user.email,
+        },
+        order: {
+          orderNumber: order._id, // Using appointment ID as order number
+          paidAt: order.paidAt, // Current time as payment time
+          paymentMethod: "Khalti",
+          totalPrice: paymentInfo.total_amount,
+          orderItems: order.orderItems,
+          // Add any other order details you want to display
+        },
+        payment: {
+          pidx: paymentInfo.pidx,
+        },
+      };
+
+      // Send email
+      try {
+        const __filename = fileURLToPath(import.meta.url);
+        const currentDirectory = path.dirname(__filename);
+        const mailPath = path.join(
+          currentDirectory,
+          "../mails/paymentSuccessfull.ejs"
+        );
+
+        const html = await ejs.renderFile(mailPath, mailData);
+
+        await sendMail({
+          email: user.email,
+          subject: "Payment Successful",
+          template: "paymentSuccessfull.ejs",
+          data: mailData,
+        });
+      } catch (mailError) {
+        console.error("Mail sending failed:", mailError);
+        // Don't fail the whole request if email fails
+      }
+
       await order.save();
+
+      const thisPayment = await Payment.findOne({ pidx: paymentInfo.pidx });
+      if (!thisPayment) {
+        // save to the payment models
+        await Payment.create({
+          user: user._id,
+          distributor: order.distributor,
+          order: order._id,
+          status: "Paid",
+          amount: paymentInfo.total_amount,
+          pidx: paymentInfo.pidx,
+        });
+      }
 
       res.json({
         success: true,

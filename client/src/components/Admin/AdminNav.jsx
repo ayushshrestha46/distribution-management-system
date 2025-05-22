@@ -16,11 +16,9 @@ const AdminNav = () => {
 
   return (
     <>
-      <div className="fixed top-0 left-60 right-0 h-16 bg-white border-b border-gray-200 px-8 flex items-center justify-between z-10 backdrop-blur-sm bg-white/90">
+      <div className="fixed top-0 left-64 right-0 h-16 bg-white border-b border-gray-200 px-8 flex items-center justify-between z-10 backdrop-blur-sm bg-white/90">
         <div className="flex items-center gap-4 flex-1 max-w-xl">
-          <p className="text-[#4841d7] font-semibold font-serif text-2xl">
-            Admin
-          </p>
+
         </div>
         <div className="flex items-center gap-2">
           <button className="p-2 hover:bg-gray-100 rounded-lg relative"></button>

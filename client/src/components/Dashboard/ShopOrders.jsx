@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import {
   useCompletePaymentMutation,
   useGetOrdersShopQuery,
@@ -11,6 +11,7 @@ import { BillGenerated } from "./BillGenerated";
 import { toast } from "react-toastify";
 import { Badge } from "../ui/badge";
 import { CheckCircle2 } from "lucide-react";
+
 const ShopOrders = () => {
   const { data, refetch } = useGetOrdersShopQuery();
   const orders = Array.isArray(data?.orders) ? [...data.orders].reverse() : [];
@@ -22,32 +23,48 @@ const ShopOrders = () => {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [paymentResult, setPaymentResult] = useState(null);
   const [completePayment, { isLoading }] = useCompletePaymentMutation();
+  const paymentProcessedRef = useRef(false);
 
   const completePaymentHandler = async (pidx, orderId) => {
+    // Prevent duplicate calls
+    if (paymentProcessedRef.current) return;
+    
     try {
+      paymentProcessedRef.current = true;
       const paymentData = await completePayment({ pidx, orderId }).unwrap();
       if (paymentData.success) {
         setPaymentResult(paymentData);
         setShowSuccessPopup(true);
+        // Clean up URL parameters after successful processing
+        window.history.replaceState({}, document.title, '/dashboard/orders');
       }
-      return;
     } catch (error) {
       toast.error(error?.data?.message || "Payment verification failed");
+      paymentProcessedRef.current = false;
     }
   };
 
   useEffect(() => {
+    const handlePaymentCompletion = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pidxFromUrl = urlParams.get("pidx");
+      
+      if (pidxFromUrl && !paymentProcessedRef.current) {
+        const orderId = localStorage.getItem("orderId");
+        if (orderId) {
+          completePaymentHandler(pidxFromUrl, orderId);
+        }
+      }
+    };
+    
     refetch();
-    const urlParams = new URLSearchParams(window.location.search);
-    const pidxFromUrl = urlParams.get("pidx");
-    if (pidxFromUrl) {
-      // await completePayment()
-      const orderId = localStorage.getItem("orderId");
-      completePaymentHandler(pidxFromUrl, orderId);
-    }
-    // completePaymentHandler('pidx','orderId')
+    handlePaymentCompletion();
+    
+    // No dependencies array needed as we only want this to run once on mount
   }, []);
+  
   const [payment, { isLoading: paymentLoading }] = useInitiatePaymentMutation();
+  
   const initiatePayment = async (data) => {
     try {
       localStorage.setItem("orderId", data.purchaseOrderId);
@@ -62,11 +79,10 @@ const ShopOrders = () => {
 
   const resetForm = useCallback(() => {
     setShowSuccessPopup(false);
-
-    window.history.pushState({}, document.title, `/dashboard/orders`);
     localStorage.removeItem("orderId");
+    paymentProcessedRef.current = false;
     window.location.reload();
-  }, [showSuccessPopup]);
+  }, []);
 
   const tabs = [
     { id: "all", label: "All", count: orders.length },
@@ -266,7 +282,13 @@ const ShopOrders = () => {
                     {["process", "delivered"].includes(order.status) &&
                       !order.isPaid && (
                         <Button
-                          onClick={() => initiatePayment({purchaseOrderId:order._id,amount:order.totalPrice, purchaseOrderName:order.distributor.user.name })}
+                          onClick={() =>
+                            initiatePayment({
+                              purchaseOrderId: order._id,
+                              amount: order.totalPrice,
+                              purchaseOrderName: order.distributor.user.name,
+                            })
+                          }
                           disabled={paymentLoading}
                         >
                           {paymentLoading
@@ -274,7 +296,7 @@ const ShopOrders = () => {
                             : "Pay with Khalti"}
                         </Button>
                       )}
-                    {order.isPaid && order.status !== 'rejected' && (
+                    {order.isPaid && order.status !== "rejected" && (
                       <span className="bg-green-200 text-green-700 rounded-md px-4 py-1  ">
                         Paid
                       </span>

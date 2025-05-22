@@ -36,6 +36,8 @@ import Support from "./Resources/Support";
 import PrivacyPolicy1 from "./Resources/PrivacyPolicy1";
 import ScrollToTop from "./ScrollToTop";
 import DistributorCustomer from "./Distributor/DistributorCustomer";
+import DistributorPayment from "./Distributor/DistributorPayment";
+import AdminPayments from "./Admin/AdminPayments";
 export {
   Login,
   Register,
@@ -74,5 +76,7 @@ export {
   Support,
   ScrollToTop,
   DistributorCustomer,
+  DistributorPayment,
+  AdminPayments,
   Footer,
 };

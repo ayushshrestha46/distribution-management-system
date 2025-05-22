@@ -10,10 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useGetUserProfileQuery } from "@/app/slices/userApiSlice";
 
 const DisNavbar = () => {
   const user = useSelector((state) => state.auth.user);
-
+  const { data } = useGetUserProfileQuery();
+  const profile = data?.user?.avatar?.url;
   return (
     <>
       <div className=" ">
@@ -39,10 +42,12 @@ const DisNavbar = () => {
             <div className="flex items-center space-x-4">
               <DropdownMenu modal={false}>
                 <DropdownMenuTrigger className="flex items-center space-x-2 focus:outline-none">
-                  <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                    <UserCircle className="w-6 h-6 text-indigo-600" />
-                  </div>
-                  <span className="text-gray-700">{user.name}</span>
+                  <Avatar className="ring-2">
+                    <AvatarImage src={profile} className="object-cover" />
+                    <AvatarFallback className="uppercase font-semibold">
+                      {user.name.slice(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end">
                   <DropdownMenuLabel className="ml-2 text-md shadow-sm">
@@ -56,15 +61,7 @@ const DisNavbar = () => {
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuSeparator />
-
-                  <Link to="/settings">
-                    <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 p-3">
-                      <Settings className="mr-2 ml-2" />
-                      <span className="font-medium text-md">Settings</span>
-                    </DropdownMenuItem>
-                  </Link>
-                  <DropdownMenuSeparator />
-                  <LogoutButton className="bg-no w-full justify-start text-red-600 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50" />
+                  <LogoutButton className="bg-no w-full ml-2.5 justify-start text-red-600 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50" />
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

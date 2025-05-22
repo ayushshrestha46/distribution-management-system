@@ -20,6 +20,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useGetUserProfileQuery } from "@/app/slices/userApiSlice";
 
 const Nav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,13 +32,15 @@ const Nav = () => {
       section.scrollIntoView({ behavior: "smooth" });
     }
   };
+  const { data } = useGetUserProfileQuery();
+  const profile = data?.user?.avatar?.url;
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50 md:px-10">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center">
             <Truck className="w-8 h-8 text-blue-900" />
-            <Link to={'/'} className="ml-2 text-2xl font-bold text-blue-900">
+            <Link to={"/"} className="ml-2 text-2xl font-bold text-blue-900">
               DISTRO
             </Link>
           </div>
@@ -96,10 +100,12 @@ const Nav = () => {
                 <div className="flex items-center space-x-4">
                   <DropdownMenu modal={false}>
                     <DropdownMenuTrigger className="flex items-center space-x-2 focus:outline-none">
-                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                        <UserCircle className="w-6 h-6 text-indigo-600" />
-                      </div>
-                      <span className="text-gray-700">{user.name}</span>
+                      <Avatar className="ring-2">
+                        <AvatarImage src={profile} className="object-cover" />
+                        <AvatarFallback className="uppercase font-semibold">
+                          {user.name.slice(0, 2)}
+                        </AvatarFallback>
+                      </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56" align="end">
                       <DropdownMenuLabel className="ml-2 text-md shadow-sm">
@@ -113,13 +119,13 @@ const Nav = () => {
                         </DropdownMenuItem>
                       </Link>
                       <DropdownMenuSeparator />
-                      <LogoutButton className="bg-no w-full justify-start text-red-600 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50" />
+                      <LogoutButton className="bg-no w-full ml-2.5 justify-start text-red-600 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50" />
                     </DropdownMenuContent>
                   </DropdownMenu>
 
                   {user?.role === "shop" ? (
                     <Link to="/dashboard">
-                      <Button className="bg-indigo-600 text-white hover:bg-indigo-700">
+                      <Button className="bg-indigo-600 text-white hover:bg-indigo-700 ml-2">
                         Dashboard
                       </Button>
                     </Link>

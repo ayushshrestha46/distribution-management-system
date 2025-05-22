@@ -46,14 +46,21 @@ const cartSlice = createSlice({
 
     addToCart: (state, action) => {
       if (!state.userId) return; // Prevent adding if no user
-      const existingItem = state.items.find(
-        (item) => item._id === action.payload._id
-      );
+
+      const product = action.payload;
+      const quantityToAdd = product.selectedQuantity || 1; // Use selectedQuantity if provided, otherwise default to 1
+
+      const existingItem = state.items.find((item) => item._id === product._id);
+
       if (existingItem) {
-        existingItem.quantity += 1;
+        existingItem.quantity += quantityToAdd; // Add the selected quantity instead of just 1
       } else {
-        state.items.push({ ...action.payload, quantity: 1 });
+        state.items.push({
+          ...product,
+          quantity: quantityToAdd, // Set the initial quantity to the selected quantity
+        });
       }
+
       saveCartToStorage(state.userId, state.items);
     },
 

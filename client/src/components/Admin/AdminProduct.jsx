@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 
 import { toast } from "react-toastify";
+import { ScrollArea } from "../ui/scroll-area";
 
 const AdminProduct = () => {
   const { data, error, isLoading, refetch } = useAllProductsQuery();
@@ -58,6 +59,7 @@ const AdminProduct = () => {
         </Button>
       </div>
 
+          <ScrollArea className="h-[calc(100vh-190px)]">
       <div className="flex items-center space-x-2">
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
@@ -71,69 +73,70 @@ const AdminProduct = () => {
       </div>
 
       <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Image</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Quantity</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Warehouse</TableHead>
-              <TableHead>Distributor</TableHead>
-              <TableHead className="w-16"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <TableRow key={product._id}>
-                  <TableCell className="font-medium">
-                    <div className="w-16 rounded-lg">
-                      <img
-                        src={product.images[0].url}
-                        alt=""
-                        className="rounded-lg"
-                      />
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-medium">{product.name}</TableCell>
-                  <TableCell>{product.category}</TableCell>
-                  <TableCell>Rs.{product.price.toLocaleString()}</TableCell>
-                  <TableCell>{product.quantity}</TableCell>
-                  <TableCell>
-                    <Badge
-                      className={
-                        product.isActive
-                          ? "bg-green-400 hover:bg-green-500"
-                          : "bg-gray-500 hover:bg-gray-600"
-                      }
-                    >
-                      {product.isActive ? "Active" : "Inactive"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {product.owner?.warehouseDetails?.address}
-                  </TableCell>
-                  <TableCell>
-                    {product.owner?.user?.name}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Image</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Warehouse</TableHead>
+                <TableHead>Distributor</TableHead>
+                <TableHead className="w-16"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredProducts.length > 0 ? (
+                filteredProducts.map((product) => (
+                  <TableRow key={product._id}>
+                    <TableCell className="font-medium">
+                      <div className="w-16 rounded-lg">
+                        <img
+                          src={product.images[0].url}
+                          alt=""
+                          className="rounded-lg"
+                        />
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {product.name}
+                    </TableCell>
+                    <TableCell>{product.category}</TableCell>
+                    <TableCell>Rs.{product.price.toLocaleString()}</TableCell>
+                    <TableCell>{product.quantity}</TableCell>
+                    <TableCell>
+                      <Badge
+                        className={
+                          product.isActive
+                            ? "bg-green-400 hover:bg-green-500"
+                            : "bg-gray-500 hover:bg-gray-600"
+                        }
+                      >
+                        {product.isActive ? "Active" : "Inactive"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {product.owner?.warehouseDetails?.address}
+                    </TableCell>
+                    <TableCell>{product.owner?.user?.name}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="text-center py-6 text-gray-500"
+                  >
+                    No products found
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={7}
-                  className="text-center py-6 text-gray-500"
-                >
-                  No products found
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
       </div>
+        </ScrollArea>
     </div>
   );
 };

@@ -33,6 +33,8 @@ import {
   PrivacyPolicy1,
   Support,
   DistributorCustomer,
+  DistributorPayment,
+  AdminPayments,
 } from "./components";
 import { StrictMode } from "react";
 import AuthLayout from "./routes/AuthLayout";
@@ -207,6 +209,14 @@ const router = createBrowserRouter([
               </AdminLayout>
             ),
           },
+          {
+            path: "all-payments",
+            element: (
+              <AdminLayout>
+                <AdminPayments />
+              </AdminLayout>
+            ),
+          },
         ],
       },
 
@@ -242,6 +252,10 @@ const router = createBrowserRouter([
           {
             path: "customers",
             element: <DistributorCustomer />,
+          },
+          {
+            path: "payments",
+            element: <DistributorPayment />,
           },
         ],
       },
